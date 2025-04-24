@@ -1,17 +1,11 @@
 package com.paulos3r.exercicio.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.time.LocalDate;
 
-@Entity("pessoa")
-@Table("pessoa")
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity(name = "pessoa")
+@Table(name = "pessoa")
 public class Pessoa {
 
   @Id
@@ -23,5 +17,6 @@ public class Pessoa {
   private String cpf;
   private LocalDate dataDeNascimento;
   private String endereco;
+  @Column(length = 15)
   private String telefone;
 }
