@@ -7,10 +7,15 @@ import jakarta.persistence.*;
 public class Ministrante {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)]
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private Docente docente;
-  private Disciplina disciplina;
+  @ManyToOne
+  @JoinColumn(name = "docente_id") // Nome da coluna da chave estrangeira para Docente
+  private Docente docente_id;
+
+  @ManyToOne
+  @JoinColumn(name = "disciplina_id") // Nome da coluna da chave estrangeira para Disciplina
+  private Disciplina disciplina_id;
 
 }

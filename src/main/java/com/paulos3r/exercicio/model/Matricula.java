@@ -8,6 +8,6 @@ public class Matricula {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private Long idAluno;
-  private Long idTurma;
+  private Long aluno_id;
+  private Long turma_id;
 }

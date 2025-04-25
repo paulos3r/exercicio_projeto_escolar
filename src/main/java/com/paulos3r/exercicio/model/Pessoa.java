@@ -15,7 +15,8 @@ public class Pessoa {
   private String nome;
   @Column(unique = true, length = 11)
   private String cpf;
-  private LocalDate dataDeNascimento;
+  @Column(name = "data_de_nascimento")
+  private LocalDate data_nascimento;
   private String endereco;
   @Column(length = 15)
   private String telefone;

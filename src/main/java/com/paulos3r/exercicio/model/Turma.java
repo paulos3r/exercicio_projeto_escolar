@@ -10,11 +10,14 @@ public class Turma {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private Curso idCurso;
+  @ManyToOne
+  @JoinColumn(name = "curso_id")
+  private Curso curso_id;
   private String nome;
-  private LocalDate dataInicio;
-  private LocalDate dataFinal;
+  private LocalDate data_inicio;
+  private LocalDate data_final;
   private String horario;
-  private String local;
+  private String sala;
+  @Enumerated(EnumType.STRING)
   private Status status;
 }

@@ -11,8 +11,9 @@ public class Disciplina {
 
   private String nome;
   private String ementa;
-  private Double cargaHoraria;
-  private Integer porcentagemTeoria;  // por que porcentagem.... ??
-  private Integer porcentagemPratica; // não faz sentido nem um isso... verificar os requisitos para colocar na ementa
+  private Double carga_horaria;
+  private Integer porcentagem_teoria;  // por que porcentagem.... ??
+  private Integer porcentagem_pratica; // não faz sentido nem um isso... verificar os requisitos para colocar na ementa
+  @Enumerated(EnumType.STRING)
   private Status status;
 }

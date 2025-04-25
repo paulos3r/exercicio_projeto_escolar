@@ -11,8 +11,8 @@ public class Aluno {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @ManyToOne
-  private Pessoa idPessoa;
-  private Long idMatricula;
-  private LocalDateTime dataMatricula;
-  private char alunoEspecial;
+  private Pessoa pessoa_id;
+  private Long matricula_id;
+  private LocalDateTime data_matricula;
+  private char aluno_especial;
 }
