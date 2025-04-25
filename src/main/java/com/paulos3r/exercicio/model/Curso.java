@@ -5,14 +5,13 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "aluno")
-public class Aluno {
+@Table( name = "curso")
+public class Curso {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @ManyToOne
-  private Pessoa idPessoa;
-  private Long idMatricula;
-  private LocalDateTime dataMatricula;
-  private char alunoEspecial;
+  private String nome;
+  private Categoria categoria;
+  private LocalDateTime dataCriacao;
+  private Status status;
 }
