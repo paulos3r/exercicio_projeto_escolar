@@ -1,23 +1,33 @@
 package com.paulos3r.exercicio.model;
 
+import com.paulos3r.exercicio.dto.PessoaDTO;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity(name = "pessoa")
 @Table(name = "pessoa")
+@Setter
+@Getter
 public class Pessoa {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @Column(length = 100)
   private String nome;
-  @Column(unique = true, length = 11)
+  @Column(unique = true)
   private String cpf;
-  @Column(name = "data_de_nascimento")
   private LocalDate data_nascimento;
   private String endereco;
-  @Column(length = 15)
   private String telefone;
+
+  public Pessoa(PessoaDTO pessoaDTO){
+    this.nome = pessoaDTO.nome();
+    this.cpf = pessoaDTO.cpf();
+    this.data_nascimento = pessoaDTO.data_nascimento();
+    this.endereco = pessoaDTO.endereco();
+    this.telefone = pessoaDTO.telefone();
+  }
 }

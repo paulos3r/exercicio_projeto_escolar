@@ -1,11 +1,15 @@
 package com.paulos3r.exercicio.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table( name = "curso")
+@Getter
+@Setter
 public class Curso {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
