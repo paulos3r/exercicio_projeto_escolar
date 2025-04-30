@@ -2,8 +2,7 @@ package com.paulos3r.exercicio.model;
 
 import com.paulos3r.exercicio.dto.PessoaDTO;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -11,6 +10,9 @@ import java.time.LocalDate;
 @Table(name = "pessoa")
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Pessoa {
 
   @Id

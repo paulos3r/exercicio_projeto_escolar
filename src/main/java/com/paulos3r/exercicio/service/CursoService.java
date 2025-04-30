@@ -1,9 +1,11 @@
 package com.paulos3r.exercicio.service;
 
+import com.paulos3r.exercicio.dto.CursoDTO;
 import com.paulos3r.exercicio.model.Curso;
 import com.paulos3r.exercicio.model.Status;
 import com.paulos3r.exercicio.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +22,16 @@ public class CursoService {
       throw new Exception("Curso está inativo");
     }
   }
-  public void saveAluno(Curso curso){
+  public Curso saveCurso(CursoDTO cursoDTO){
+    Curso curso = new Curso();
+
+    curso.setNome(cursoDTO.nome());
+    curso.setStatus(Status.ATIVO);
+    curso.setCategoria(cursoDTO.categoria());
+    curso.setData_criacao(cursoDTO.data_criacao());
+
     this.repository.save(curso);
+
+    return curso;
   }
 }

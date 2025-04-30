@@ -26,7 +26,7 @@ public class AlunoService {
     return this.alunoRepository.findAlunoById(id).orElseThrow(()-> new Exception("Aluno não encontrado"));
   }
 
-  public void SalvarAluno(AlunoDTO alunoDTO) throws Exception {
+  public Aluno salvarAluno(AlunoDTO alunoDTO) throws Exception {
     Pessoa pessoa = this.pessoaService.findPessoaById(alunoDTO.pessoa_id());
     Matricula matricula = this.matriculaService.findMatriculaById(alunoDTO.matricula_id());
 
@@ -45,5 +45,7 @@ public class AlunoService {
     aluno.setData_matricula(LocalDateTime.now());
 
     this.alunoRepository.save(aluno);
+
+    return aluno;
   }
 }

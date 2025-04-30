@@ -1,8 +1,7 @@
 package com.paulos3r.exercicio.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +9,9 @@ import java.time.LocalDateTime;
 @Table( name = "curso")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Curso {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

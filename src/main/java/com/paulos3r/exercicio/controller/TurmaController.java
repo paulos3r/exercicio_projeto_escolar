@@ -2,9 +2,11 @@ package com.paulos3r.exercicio.controller;
 
 import com.paulos3r.exercicio.service.TurmaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/turma")
 public class TurmaController {
 
   @Autowired
