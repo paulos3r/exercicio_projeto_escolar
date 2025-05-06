@@ -3,6 +3,7 @@ package com.paulos3r.exercicio.model;
 import com.paulos3r.exercicio.dto.PessoaDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -21,6 +22,7 @@ public class Pessoa {
   private String nome;
   @Column(unique = true)
   private String cpf;
+  @DateTimeFormat(pattern = "yyyy-mm-dd")
   private LocalDate data_nascimento;
   private String endereco;
   private String telefone;

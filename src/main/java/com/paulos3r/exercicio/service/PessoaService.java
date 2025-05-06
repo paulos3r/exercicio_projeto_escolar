@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PessoaService {
@@ -15,21 +16,29 @@ public class PessoaService {
   private PessoaRepository repository;
 
     public Pessoa findPessoaById(Long id) throws Exception {
-    return this.repository.findPessoaById(id).orElseThrow(()-> new Exception("Pessoa não encontrado"));
-  }
-
-  public Pessoa createPessoa(PessoaDTO pessoaDTO){
-      Pessoa pessoa = new Pessoa(pessoaDTO);
-      this.savePessoa(pessoa);
-
-      return pessoa;
+    return this.repository.findById(id).orElseThrow(()-> new Exception("Pessoa não encontrado"));
   }
 
   public List<Pessoa> getAllPessoa(){
-      return this.repository.findAll();
+    return this.repository.findAll();
   }
 
-  public void savePessoa(Pessoa pessoa){
-    this.repository.save(pessoa);
+  public Pessoa createPessoa(PessoaDTO pessoaDTO) throws Exception{
+      Pessoa pessoa = new Pessoa(pessoaDTO);
+      this.repository.save(pessoa);
+      return pessoa;
   }
+
+  public Pessoa updatePessoa(Long id, PessoaDTO pessoaDTO) throws Exception{
+    Optional<Pessoa> pessoaIsPresent = this.repository.findById(id);
+    Pessoa pessoa = new Pessoa(pessoaDTO);
+    this.repository.save(pessoa);
+    return pessoa;
+  }
+
+  public void deletePessoa(Long id) throws Exception{
+      this.repository.findById(id).orElseThrow(()-> new Exception("Cadastro não encontrado"));
+      this.repository.deleteById(id);
+  }
+
 }

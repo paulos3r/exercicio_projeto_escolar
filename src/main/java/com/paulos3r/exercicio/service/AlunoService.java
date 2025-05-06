@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlunoService {
@@ -26,19 +28,22 @@ public class AlunoService {
     return this.alunoRepository.findAlunoById(id).orElseThrow(()-> new Exception("Aluno não encontrado"));
   }
 
-  public Aluno salvarAluno(AlunoDTO alunoDTO) throws Exception {
+  public List<Aluno> findAllAluno() throws Exception {
+    return this.alunoRepository.findAll();
+  }
+
+  public Aluno createAluno(AlunoDTO alunoDTO) throws Exception {
     Pessoa pessoa = this.pessoaService.findPessoaById(alunoDTO.pessoa_id());
-    Matricula matricula = this.matriculaService.findMatriculaById(alunoDTO.matricula_id());
+    List<Matricula> matricula = this.matriculaService.findMatriculaById(alunoDTO.matricula_id());
 
     if ( pessoa.getId() == null ){
       throw new Exception("Pessoa não encontrada");
     }
-    if ( matricula.getId()== null){
+    if ( matricula== null){
       throw new Exception("Matricula não encontrada");
     }
 
     Aluno aluno = new Aluno();
-
     aluno.setAluno_especial('N');
     aluno.setMatricula_id(matricula);
     aluno.setPessoa_id(pessoa);
@@ -47,5 +52,28 @@ public class AlunoService {
     this.alunoRepository.save(aluno);
 
     return aluno;
+  }
+
+  public Aluno updateAlunoById(Long id, AlunoDTO alunoDTO) throws Exception {
+    Optional<Aluno> alunoIsPresent = this.alunoRepository.findById(id);
+
+    Pessoa pessoa= this.pessoaService.findPessoaById(alunoDTO.pessoa_id());
+    List<Matricula> matricula = this.matriculaService.findMatriculaById(alunoDTO.matricula_id());
+
+    Aluno aluno = new Aluno();
+    if ( alunoIsPresent.isPresent()){
+
+      aluno.setAluno_especial(alunoDTO.aluno_especial());
+      aluno.setMatricula_id(matricula);
+      aluno.setPessoa_id(pessoa);
+      aluno.setData_matricula(LocalDateTime.now());
+
+      this.alunoRepository.save(aluno);
+    }
+    return aluno;
+  }
+
+  public void deleteAlunoById(Long id) {
+    alunoRepository.deleteById(id);
   }
 }

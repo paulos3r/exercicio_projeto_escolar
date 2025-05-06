@@ -19,8 +19,12 @@ public class PessoaController {
 
   @PostMapping
   public ResponseEntity<Pessoa> createPessoa(@RequestBody PessoaDTO pessoaDTO){
-    Pessoa pessoa = pessoaService.createPessoa(pessoaDTO);
-    return new ResponseEntity<>(pessoa, HttpStatus.CREATED);
+    try {
+      Pessoa pessoa = pessoaService.createPessoa(pessoaDTO);
+      return new ResponseEntity<>(pessoa, HttpStatus.CREATED);
+    }catch (Exception e){
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   @GetMapping
@@ -28,5 +32,35 @@ public class PessoaController {
     List<Pessoa> pessoa = this.pessoaService.getAllPessoa();
 
     return new ResponseEntity<>(pessoa, HttpStatus.OK);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Pessoa> getPessoaId(@PathVariable Long id){
+    try {
+      Pessoa pessoa =  this.pessoaService.findPessoaById(id);
+      return new ResponseEntity<>(pessoa, HttpStatus.OK);
+    }catch (Exception e){
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Pessoa> putPessoa(@PathVariable Long id, @RequestBody PessoaDTO pessoaDTO){
+    try {
+      Pessoa pessoa= this.pessoaService.updatePessoa(id, pessoaDTO);
+      return ResponseEntity.ok(pessoa);
+    }catch (Exception e){
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> deletePessoa(@PathVariable Long id){
+    try{
+      this.pessoaService.deletePessoa(id);
+      return ResponseEntity.noContent().build();
+    }catch (Exception e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
   }
 }

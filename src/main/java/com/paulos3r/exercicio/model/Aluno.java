@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "aluno")
@@ -19,9 +20,9 @@ public class Aluno {
   @ManyToOne
   @JoinColumn(name = "pessoa_id")
   private Pessoa pessoa_id;
-  @ManyToOne
+  @OneToMany
   @JoinColumn(name = "matricula_id")
-  private Matricula matricula_id;
+  private List<Matricula> matricula_id;
   private LocalDateTime data_matricula;
   private char aluno_especial;
 }
