@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AlunoService {
@@ -46,21 +45,13 @@ public class AlunoService {
   }
 
   public Aluno updateAlunoById(Long id, AlunoDTO alunoDTO) throws Exception {
-    Optional<Aluno> alunoIsPresent = this.alunoRepository.findById(id);
+    Aluno aluno = this.alunoRepository.findById(id).orElseThrow(()-> new Exception("Aluno não encontrado"));
 
-    if (alunoIsPresent.isEmpty()){
-      return null;
-    }
-
-    Pessoa pessoa= this.pessoaService.findPessoaById(alunoDTO.pessoa_id().getId());
-
-    if (pessoa.getId()==null){
-      return null;
-    }
-
-    Aluno aluno = new Aluno();
+    this.pessoaService.findPessoaById(alunoDTO.pessoa_id().getId());
 
     aluno.atualizarAluno(alunoDTO);
+
+    this.alunoRepository.save(aluno);
 
     return aluno;
   }

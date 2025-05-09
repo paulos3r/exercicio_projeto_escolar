@@ -20,10 +20,12 @@ public class AlunoController {
 
   @PostMapping
   public ResponseEntity<Aluno> postAluno(@RequestBody AlunoDTO alunoDTO) throws Exception {
-
-    Aluno aluno = this.alunoService.createAluno(alunoDTO);
-
-    return new ResponseEntity<>(aluno, HttpStatus.CREATED);
+    try{
+      Aluno aluno = this.alunoService.createAluno(alunoDTO);
+      return ResponseEntity.ok().body(aluno);
+    }catch (Exception e ){
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @GetMapping
@@ -51,9 +53,9 @@ public class AlunoController {
   public ResponseEntity<Aluno> putAlunoById(@PathVariable Long id, @RequestBody AlunoDTO alunoDTO){
     try{
       Aluno aluno = this.alunoService.updateAlunoById(id, alunoDTO);
-      return new ResponseEntity<>(aluno, HttpStatus.OK);
+      return ResponseEntity.ok(aluno);
     }catch (Exception e){
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     }
   }
 

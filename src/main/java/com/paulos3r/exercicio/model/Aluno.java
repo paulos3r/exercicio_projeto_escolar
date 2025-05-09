@@ -21,6 +21,7 @@ public class Aluno {
   @ManyToOne
   @JoinColumn(name = "pessoa_id")
   private Pessoa pessoa_id;
+  @Enumerated(EnumType.STRING)
   private Status aluno_especial;
   @Enumerated(EnumType.STRING)
   private Status status;
