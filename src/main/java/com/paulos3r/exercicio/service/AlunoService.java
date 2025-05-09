@@ -2,13 +2,12 @@ package com.paulos3r.exercicio.service;
 
 import com.paulos3r.exercicio.dto.AlunoDTO;
 import com.paulos3r.exercicio.model.Aluno;
-import com.paulos3r.exercicio.model.Matricula;
 import com.paulos3r.exercicio.model.Pessoa;
+import com.paulos3r.exercicio.model.Status;
 import com.paulos3r.exercicio.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +18,10 @@ public class AlunoService {
   private PessoaService pessoaService;
 
   @Autowired
-  private MatriculaService matriculaService;
-
-  @Autowired
   private AlunoRepository alunoRepository;
 
   public Aluno findAlunoById(Long id) throws Exception {
-    return this.alunoRepository.findAlunoById(id).orElseThrow(()-> new Exception("Aluno não encontrado"));
+    return this.alunoRepository.findById(id).orElseThrow(()->new Exception("Aluno não encontrado"));
   }
 
   public List<Aluno> findAllAluno() throws Exception {
@@ -33,21 +29,16 @@ public class AlunoService {
   }
 
   public Aluno createAluno(AlunoDTO alunoDTO) throws Exception {
-    Pessoa pessoa = this.pessoaService.findPessoaById(alunoDTO.pessoa_id());
-    List<Matricula> matricula = this.matriculaService.findMatriculaById(alunoDTO.matricula_id());
+    Pessoa pessoa = this.pessoaService.findPessoaById(alunoDTO.pessoa_id().getId());
 
     if ( pessoa.getId() == null ){
       throw new Exception("Pessoa não encontrada");
     }
-    if ( matricula== null){
-      throw new Exception("Matricula não encontrada");
-    }
 
     Aluno aluno = new Aluno();
-    aluno.setAluno_especial('N');
-    aluno.setMatricula_id(matricula);
+    aluno.setAluno_especial(Status.INATIVO);
     aluno.setPessoa_id(pessoa);
-    aluno.setData_matricula(LocalDateTime.now());
+    aluno.setStatus(Status.ATIVO);
 
     this.alunoRepository.save(aluno);
 
@@ -57,19 +48,20 @@ public class AlunoService {
   public Aluno updateAlunoById(Long id, AlunoDTO alunoDTO) throws Exception {
     Optional<Aluno> alunoIsPresent = this.alunoRepository.findById(id);
 
-    Pessoa pessoa= this.pessoaService.findPessoaById(alunoDTO.pessoa_id());
-    List<Matricula> matricula = this.matriculaService.findMatriculaById(alunoDTO.matricula_id());
+    if (alunoIsPresent.isEmpty()){
+      return null;
+    }
+
+    Pessoa pessoa= this.pessoaService.findPessoaById(alunoDTO.pessoa_id().getId());
+
+    if (pessoa.getId()==null){
+      return null;
+    }
 
     Aluno aluno = new Aluno();
-    if ( alunoIsPresent.isPresent()){
 
-      aluno.setAluno_especial(alunoDTO.aluno_especial());
-      aluno.setMatricula_id(matricula);
-      aluno.setPessoa_id(pessoa);
-      aluno.setData_matricula(LocalDateTime.now());
+    aluno.atualizarAluno(alunoDTO);
 
-      this.alunoRepository.save(aluno);
-    }
     return aluno;
   }
 

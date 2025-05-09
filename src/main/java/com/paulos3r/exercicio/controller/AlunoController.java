@@ -3,6 +3,7 @@ package com.paulos3r.exercicio.controller;
 import com.paulos3r.exercicio.dto.AlunoDTO;
 import com.paulos3r.exercicio.model.Aluno;
 import com.paulos3r.exercicio.service.AlunoService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,6 @@ public class AlunoController {
     }catch (Exception e){
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
   }
 
   @GetMapping("/{id}")
@@ -47,6 +47,7 @@ public class AlunoController {
   }
 
   @PutMapping("/{id}")
+  @Transactional
   public ResponseEntity<Aluno> putAlunoById(@PathVariable Long id, @RequestBody AlunoDTO alunoDTO){
     try{
       Aluno aluno = this.alunoService.updateAlunoById(id, alunoDTO);

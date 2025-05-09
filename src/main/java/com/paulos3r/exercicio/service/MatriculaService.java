@@ -17,7 +17,7 @@ public class MatriculaService {
   public List<Matricula> findMatriculaById(Long id) throws Exception {
     return this.repository.findMatriculaById(id)
             .stream()
-            .map(matricula-> new Matricula(matricula.getId(), matricula.getAluno(), matricula.getTurma()))
+            .map(matricula-> new Matricula(matricula.getId(), matricula.getAluno(), matricula.getTurma(), matricula.getData_matricula()))
             .collect(Collectors.toList());
   }
 

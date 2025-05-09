@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.model;
 
+import com.paulos3r.exercicio.dto.AlunoDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,9 +21,13 @@ public class Aluno {
   @ManyToOne
   @JoinColumn(name = "pessoa_id")
   private Pessoa pessoa_id;
-  @OneToMany
-  @JoinColumn(name = "matricula_id")
-  private List<Matricula> matricula_id;
-  private LocalDateTime data_matricula;
-  private char aluno_especial;
+  private Status aluno_especial;
+  @Enumerated(EnumType.STRING)
+  private Status status;
+
+  public void atualizarAluno(AlunoDTO alunoDTO){
+    if ( alunoDTO.pessoa_id() != null ) this.setPessoa_id(alunoDTO.pessoa_id());
+    if ( alunoDTO.aluno_especial() != null ) this.setAluno_especial(alunoDTO.aluno_especial());
+    if ( alunoDTO.status() != null) this.setStatus(alunoDTO.status());
+  }
 }

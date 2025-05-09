@@ -34,4 +34,11 @@ public class Pessoa {
     this.endereco = pessoaDTO.endereco();
     this.telefone = pessoaDTO.telefone();
   }
+  public void atualizarPessoa(PessoaDTO pessoaDTO){
+    this.setCpf(pessoaDTO.cpf());
+    this.setNome(pessoaDTO.nome());
+    this.setData_nascimento(pessoaDTO.data_nascimento());
+    this.setEndereco(pessoaDTO.endereco());
+    this.setTelefone(pessoaDTO.telefone());
+  }
 }
