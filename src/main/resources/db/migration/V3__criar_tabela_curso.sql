@@ -3,5 +3,5 @@ CREATE TABLE curso (
     nome VARCHAR(255),
     categoria_id ENUM('APERFEICOAMENTO','CAPACITACAO','OFICINA','TREINAMENTO') NOT NULL,
     data_criacao DATETIME,
-    status ENUM('ATIVO', 'INATIVO') NOT NULL
+    status ENUM('ATIVO', 'INATIVO', 'CONCLUIDO') NOT NULL
 );

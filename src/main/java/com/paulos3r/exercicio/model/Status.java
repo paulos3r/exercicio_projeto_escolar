@@ -4,5 +4,6 @@ public enum Status {
   ATIVO,
   INATIVO,
   CANCELADO,
-  TRANSFERIODO
+  TRANSFERIODO,
+  CONCLUIDO
 }

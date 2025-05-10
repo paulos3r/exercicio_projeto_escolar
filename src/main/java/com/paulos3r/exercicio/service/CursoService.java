@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CursoService {
 
@@ -15,23 +17,30 @@ public class CursoService {
   private CursoRepository repository;
 
   public Curso findCursoById(Long id) throws Exception {
-    return this.repository.findCursoById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+    return this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
   }
-  private void validarCursoAtivo(Curso curso) throws Exception {
-    if (curso.getStatus() == Status.INATIVO){
-      throw new Exception("Curso está inativo");
-    }
+
+  public List<Curso> findAllCurso() throws Exception {
+    return this.repository.findAll();
   }
+
   public Curso saveCurso(CursoDTO cursoDTO){
-    Curso curso = new Curso();
-
-    curso.setNome(cursoDTO.nome());
-    curso.setStatus(Status.ATIVO);
-    curso.setCategoria(cursoDTO.categoria());
-    curso.setData_criacao(cursoDTO.data_criacao());
-
+    Curso curso = new Curso(cursoDTO);
     this.repository.save(curso);
-
     return curso;
+  }
+
+  public Curso updateCurso(Long id, CursoDTO cursoDTO) throws Exception{
+    Curso curso = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+
+    curso.updateCurso(cursoDTO);
+
+    return this.repository.save(curso);
+  }
+
+  public void deleteCurso(Long id) throws Exception{
+    Curso curso = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+    curso.deleteCurso();
+    this.repository.save(curso);
   }
 }

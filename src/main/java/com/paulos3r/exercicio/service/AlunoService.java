@@ -30,10 +30,6 @@ public class AlunoService {
   public Aluno createAluno(AlunoDTO alunoDTO) throws Exception {
     Pessoa pessoa = this.pessoaService.findPessoaById(alunoDTO.pessoa_id().getId());
 
-    if ( pessoa.getId() == null ){
-      throw new Exception("Pessoa não encontrada");
-    }
-
     Aluno aluno = new Aluno();
     aluno.setAluno_especial(Status.INATIVO);
     aluno.setPessoa_id(pessoa);

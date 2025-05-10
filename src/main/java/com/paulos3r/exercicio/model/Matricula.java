@@ -1,7 +1,6 @@
 package com.paulos3r.exercicio.model;
 
 import com.paulos3r.exercicio.dto.MatriculaDTO;
-import com.paulos3r.exercicio.service.MatriculaService;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -22,7 +22,7 @@ public class AlunoController {
   public ResponseEntity<Aluno> postAluno(@RequestBody AlunoDTO alunoDTO) throws Exception {
     try{
       Aluno aluno = this.alunoService.createAluno(alunoDTO);
-      return ResponseEntity.ok().body(aluno);
+      return ResponseEntity.status(HttpStatus.CREATED).body(aluno);
     }catch (Exception e ){
       return ResponseEntity.notFound().build();
     }
@@ -32,7 +32,7 @@ public class AlunoController {
   public ResponseEntity<List<Aluno>> getAllAluno(){
     try {
       List<Aluno> alunos = this.alunoService.findAllAluno();
-      return new ResponseEntity<>(alunos,HttpStatus.OK);
+      return ResponseEntity.ok().body(alunos);
     }catch (Exception e){
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -42,9 +42,9 @@ public class AlunoController {
   public ResponseEntity<Aluno> getAlunoById(@PathVariable Long id){
     try{
       Aluno aluno = this.alunoService.findAlunoById(id);
-      return new ResponseEntity<>(aluno, HttpStatus.OK);
+      return ResponseEntity.ok().body(aluno);
     } catch (Exception e){
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return ResponseEntity.notFound().build();
     }
   }
 
@@ -63,9 +63,9 @@ public class AlunoController {
   public ResponseEntity<Void> deleteAluno(@PathVariable Long id) {
     try{
       this.alunoService.deleteAlunoById(id);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      return  ResponseEntity.noContent().build();
     } catch (Exception e){
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return ResponseEntity.badRequest().build();
     }
   }
 }

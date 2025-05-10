@@ -4,9 +4,6 @@ import com.paulos3r.exercicio.dto.AlunoDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Entity
 @Table(name = "aluno")
 @Getter

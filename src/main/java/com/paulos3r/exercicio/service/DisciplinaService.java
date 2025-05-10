@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.service;
 
-import com.paulos3r.exercicio.model.Aluno;
 import com.paulos3r.exercicio.model.Disciplina;
 import com.paulos3r.exercicio.repository.DisciplinaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

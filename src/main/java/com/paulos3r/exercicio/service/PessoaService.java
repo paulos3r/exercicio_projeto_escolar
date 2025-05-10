@@ -4,11 +4,9 @@ import com.paulos3r.exercicio.dto.PessoaDTO;
 import com.paulos3r.exercicio.model.Pessoa;
 import com.paulos3r.exercicio.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PessoaService {
