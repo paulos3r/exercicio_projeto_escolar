@@ -41,6 +41,7 @@ public class CursoService {
   public void deleteCurso(Long id) throws Exception{
     Curso curso = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
     curso.deleteCurso();
+
     this.repository.save(curso);
   }
 }
