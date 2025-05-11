@@ -1,7 +1,9 @@
 package com.paulos3r.exercicio.dto;
 
-import java.time.LocalDateTime;
+import com.paulos3r.exercicio.model.Pessoa;
 
-public record DocenteDTO(Long pessoa_id,
-                         LocalDateTime data_contratacao) {
+import java.time.LocalDate;
+
+public record DocenteDTO(Pessoa pessoa_id,
+                         LocalDate data_contratacao) {
 }
