@@ -1,12 +1,12 @@
 package com.paulos3r.exercicio.service;
 
+import com.paulos3r.exercicio.dto.MatriculaDTO;
 import com.paulos3r.exercicio.model.Matricula;
 import com.paulos3r.exercicio.repository.MatriculaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MatriculaService {
@@ -14,15 +14,35 @@ public class MatriculaService {
   @Autowired
   private MatriculaRepository repository;
 
-  public List<Matricula> findMatriculaById(Long id) throws Exception {
-    return this.repository.findMatriculaById(id)
-            .stream()
-            .map(matricula-> new Matricula(matricula.getId(), matricula.getAluno(), matricula.getTurma(), matricula.getData_matricula()))
-            .collect(Collectors.toList());
+  @Autowired
+  private AlunoService alunoService;
+
+  @Autowired
+  private TurmaService turmaService;
+
+  public List<Matricula> findAllMatricula() throws Exception {
+    return this.repository.findAll().stream().toList();
   }
 
-  public void saveAluno(Matricula matricula){
-    this.repository.save(matricula);
+  public Matricula findMatriculaById(Long id) throws Exception {
+    return this.repository.findById(id).orElseThrow(()->new Exception("Matricula não encontrada"));
   }
 
+  public Matricula saveMatricula(MatriculaDTO matriculaDTO) throws Exception {
+    this.alunoService.findAlunoById(matriculaDTO.aluno_id().getId());
+    this.turmaService.findTurmaById(matriculaDTO.turma_id().getId());
+
+    var matricula = new Matricula(matriculaDTO);
+    return this.repository.save(matricula);
+  }
+
+  public Matricula updateMatricula(Long id, MatriculaDTO matriculaDTO) throws Exception {
+    this.alunoService.findAlunoById(matriculaDTO.aluno_id().getId());
+    this.turmaService.findTurmaById(matriculaDTO.turma_id().getId());
+
+    var matricula = this.repository.findById(id).orElseThrow(()->new Exception("Matricula não encontrada"));
+    matricula.updateMatricula(matriculaDTO);
+
+    return this.repository.save(matricula);
+  }
 }

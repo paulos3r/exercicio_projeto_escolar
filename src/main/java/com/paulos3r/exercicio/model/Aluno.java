@@ -23,9 +23,16 @@ public class Aluno {
   @Enumerated(EnumType.STRING)
   private Status status;
 
+  public Aluno(AlunoDTO alunoDTO){
+    this.setPessoa_id(alunoDTO.pessoa_id());
+    this.setAluno_especial(alunoDTO.aluno_especial());
+    this.setStatus(Status.ATIVO);
+  }
   public void atualizarAluno(AlunoDTO alunoDTO){
     if ( alunoDTO.pessoa_id() != null ) this.setPessoa_id(alunoDTO.pessoa_id());
     if ( alunoDTO.aluno_especial() != null ) this.setAluno_especial(alunoDTO.aluno_especial());
-    if ( alunoDTO.status() != null) this.setStatus(alunoDTO.status());
+  }
+  public void excluirAluno(){
+    this.setStatus(Status.INATIVO);
   }
 }

@@ -5,6 +5,7 @@ import com.paulos3r.exercicio.model.Aluno;
 import com.paulos3r.exercicio.model.Pessoa;
 import com.paulos3r.exercicio.model.Status;
 import com.paulos3r.exercicio.repository.AlunoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +28,10 @@ public class AlunoService {
     return this.alunoRepository.findAll();
   }
 
+  @Transactional
   public Aluno createAluno(AlunoDTO alunoDTO) throws Exception {
     Pessoa pessoa = this.pessoaService.findPessoaById(alunoDTO.pessoa_id().getId());
-
-    Aluno aluno = new Aluno();
-    aluno.setAluno_especial(Status.INATIVO);
-    aluno.setPessoa_id(pessoa);
-    aluno.setStatus(Status.ATIVO);
-
-    this.alunoRepository.save(aluno);
-
-    return aluno;
+    return this.alunoRepository.save(new Aluno(alunoDTO));
   }
 
   public Aluno updateAlunoById(Long id, AlunoDTO alunoDTO) throws Exception {

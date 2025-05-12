@@ -1,5 +1,8 @@
 package com.paulos3r.exercicio.dto;
 
-public record MinistranteDTO(Long docente_id,
-                             Long disciplina_id) {
+import com.paulos3r.exercicio.model.Disciplina;
+import com.paulos3r.exercicio.model.Docente;
+
+public record MinistranteDTO(Docente docente_id,
+                             Disciplina disciplina_id) {
 }

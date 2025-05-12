@@ -1,5 +1,8 @@
 package com.paulos3r.exercicio.dto;
 
-public record GradeDTO(Long turma_id,
-                       Long ministrante_id) {
+import com.paulos3r.exercicio.model.Ministrante;
+import com.paulos3r.exercicio.model.Turma;
+
+public record GradeDTO(Turma turma_id,
+                       Ministrante ministrante_id) {
 }
