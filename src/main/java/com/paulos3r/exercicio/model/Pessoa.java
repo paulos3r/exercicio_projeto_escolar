@@ -27,12 +27,18 @@ public class Pessoa {
   private String endereco;
   private String telefone;
 
+  @OneToOne
+  @JoinColumn(name = "usuario_id")
+  private Usuario usuario;
+
+
   public Pessoa(PessoaDTO pessoaDTO){
     this.nome = pessoaDTO.nome();
     this.cpf = pessoaDTO.cpf();
     this.data_nascimento = pessoaDTO.data_nascimento();
     this.endereco = pessoaDTO.endereco();
     this.telefone = pessoaDTO.telefone();
+    this.usuario = pessoaDTO.usuario();
   }
   public void atualizarPessoa(PessoaDTO pessoaDTO){
     this.setCpf(pessoaDTO.cpf());

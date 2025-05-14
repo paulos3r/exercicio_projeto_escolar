@@ -24,7 +24,7 @@ public class GradeService {
     return this.repository.findGradeById(id).orElseThrow(()-> new Exception("Grade não encontrado"));
   }
 
-  public List<Grade> findAllGrade(Long id) throws Exception {
+  public List<Grade> findAllGrade() throws Exception {
     return this.repository.findAll();
   }
 

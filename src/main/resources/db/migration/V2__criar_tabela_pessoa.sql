@@ -4,5 +4,7 @@ CREATE TABLE pessoa (
     cpf VARCHAR(11) UNIQUE,
     data_de_nascimento DATE,
     endereco VARCHAR(255),
-    telefone VARCHAR(15)
+    telefone VARCHAR(15),
+    usuario_id BIGINT,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );

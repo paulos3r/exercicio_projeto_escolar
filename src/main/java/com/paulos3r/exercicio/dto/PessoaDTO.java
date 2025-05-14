@@ -1,5 +1,7 @@
 package com.paulos3r.exercicio.dto;
 
+import com.paulos3r.exercicio.model.Usuario;
+
 import java.time.LocalDate;
 
 public record PessoaDTO( Long id,
@@ -7,5 +9,6 @@ public record PessoaDTO( Long id,
                          String cpf,
                          LocalDate data_nascimento,
                          String endereco,
-                         String telefone) {
+                         String telefone,
+                         Usuario usuario) {
 }

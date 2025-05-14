@@ -18,7 +18,8 @@ public class GradeController {
   @GetMapping
   public ResponseEntity<List<Grade>> getAllGrade(){
     try {
-      return ResponseEntity.ok();
+      var grade = this.gradeService.findAllGrade();
+      return ResponseEntity.ok(grade);
     }catch (Exception e){
       return ResponseEntity.notFound().build();
     }
@@ -26,7 +27,8 @@ public class GradeController {
   @GetMapping("/{id}")
   public ResponseEntity<Grade> getGradeById(@PathVariable Long id){
     try {
-      return ResponseEntity.ok();
+      var grade = this.gradeService.findGradeById(id);
+      return ResponseEntity.ok(grade);
     }catch (Exception e){
       return ResponseEntity.notFound().build();
     }
@@ -35,7 +37,8 @@ public class GradeController {
   @PostMapping
   public ResponseEntity<Grade> postGrade(@RequestBody GradeDTO gradeDTO){
     try {
-      return ResponseEntity.ok();
+      var grade = this.gradeService.saveAluno(gradeDTO);
+      return ResponseEntity.ok(grade);
     }catch (Exception e){
       return ResponseEntity.notFound().build();
     }
@@ -44,15 +47,17 @@ public class GradeController {
   @PutMapping("/{id}")
   public ResponseEntity<Grade> putGradeById(@PathVariable Long id, @RequestBody GradeDTO gradeDTO){
     try {
-      return ResponseEntity.ok();
+      var grade = this.gradeService.updateGrade(id, gradeDTO);
+      return ResponseEntity.ok(grade);
     }catch (Exception e){
       return ResponseEntity.notFound().build();
     }
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteGradeById(){
+  public ResponseEntity<Void> deleteGradeById(Long id){
     try {
+      this.gradeService.deleteGrade(id);
       return ResponseEntity.noContent().build();
     }catch (Exception e){
       return ResponseEntity.notFound().build();
