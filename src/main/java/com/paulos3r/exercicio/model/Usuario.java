@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,5 +45,23 @@ public class Usuario implements UserDetails{
   public Collection<? extends GrantedAuthority> getAuthorities(){
     return null;
   }
+/* FUTURAMENTE TEM QUE IMPLEMENTAR
+  @Override
+  public boolean isAccountNonExpired() {
+    return !dataExpiracaoConta.isBefore(LocalDate.now());
+  }
+  @Override
+  public boolean isAccountNonLocked() {
+    return tentativasLogin < MAX_TENTATIVAS;
+  }
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return dataUltimaMudancaSenha.isAfter(LocalDate.now().minusDays(DIAS_EXPIRACAO_SENHA));
+  }
+  @Override
+  public boolean isEnabled() {
+    return ativo;
+  }
 
+ */
 }
