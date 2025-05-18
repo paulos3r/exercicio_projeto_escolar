@@ -4,6 +4,7 @@ import com.paulos3r.exercicio.dto.CursoDTO;
 import com.paulos3r.exercicio.model.Curso;
 import com.paulos3r.exercicio.model.Status;
 import com.paulos3r.exercicio.repository.CursoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,13 @@ public class CursoService {
   public List<Curso> findAllCurso() throws Exception {
     return this.repository.findAll();
   }
-
+  @Transactional
   public Curso saveCurso(CursoDTO cursoDTO){
     Curso curso = new Curso(cursoDTO);
     this.repository.save(curso);
     return curso;
   }
-
+  @Transactional
   public Curso updateCurso(Long id, CursoDTO cursoDTO) throws Exception{
     Curso curso = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
 
@@ -37,7 +38,7 @@ public class CursoService {
 
     return this.repository.save(curso);
   }
-
+  @Transactional
   public void deleteCurso(Long id) throws Exception{
     Curso curso = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
     curso.deleteCurso();

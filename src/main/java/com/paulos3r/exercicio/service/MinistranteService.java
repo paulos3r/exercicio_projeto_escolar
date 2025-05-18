@@ -3,6 +3,7 @@ package com.paulos3r.exercicio.service;
 import com.paulos3r.exercicio.dto.MinistranteDTO;
 import com.paulos3r.exercicio.model.Ministrante;
 import com.paulos3r.exercicio.repository.MinistranteRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +28,13 @@ public class MinistranteService {
   public List<Ministrante> findAllMinistrante() throws Exception {
     return this.repository.findAll();
   }
-
+  @Transactional
   public Ministrante saveMinistrante(MinistranteDTO ministranteDTO){
     var ministrante = new Ministrante(ministranteDTO);
     this.repository.save(ministrante);
     return ministrante;
   }
-
+  @Transactional
   public Ministrante updateMinistrante(Long id, MinistranteDTO ministranteDTO) throws Exception{
     Ministrante ministrante = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
 

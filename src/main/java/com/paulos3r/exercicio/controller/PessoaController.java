@@ -1,11 +1,14 @@
 package com.paulos3r.exercicio.controller;
 
 import com.paulos3r.exercicio.dto.PessoaDTO;
+import com.paulos3r.exercicio.dto.UsuarioDTO;
 import com.paulos3r.exercicio.model.Pessoa;
+import com.paulos3r.exercicio.model.Usuario;
 import com.paulos3r.exercicio.service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +21,9 @@ public class PessoaController {
   private PessoaService pessoaService;
 
   @PostMapping
-  public ResponseEntity<Pessoa> createPessoa(@RequestBody PessoaDTO pessoaDTO){
+  public ResponseEntity<Pessoa> createPessoa(@RequestBody PessoaDTO pessoaDTO, UsuarioDTO usuarioDTO, @AuthenticationPrincipal Usuario usuario){
     try {
-      Pessoa pessoa = pessoaService.createPessoa(pessoaDTO);
+      Pessoa pessoa = pessoaService.createPessoa(pessoaDTO, usuario);
       return new ResponseEntity<>(pessoa, HttpStatus.CREATED);
     }catch (Exception e){
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -45,7 +48,7 @@ public class PessoaController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Pessoa> putPessoa(@PathVariable Long id, @RequestBody PessoaDTO pessoaDTO){
+  public ResponseEntity<Pessoa> putPessoa(@PathVariable Long id, @RequestBody PessoaDTO pessoaDTO, @AuthenticationPrincipal Usuario usuario){
     try {
       Pessoa pessoa= this.pessoaService.updatePessoa(id, pessoaDTO);
       return ResponseEntity.ok(pessoa);
@@ -55,7 +58,7 @@ public class PessoaController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> deletePessoa(@PathVariable Long id){
+  public ResponseEntity<String> deletePessoa(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario){
     try{
       this.pessoaService.deletePessoa(id);
       return ResponseEntity.noContent().build();

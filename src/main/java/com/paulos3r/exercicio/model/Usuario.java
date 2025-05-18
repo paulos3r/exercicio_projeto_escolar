@@ -10,8 +10,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "usuario")
@@ -28,17 +30,21 @@ public class Usuario implements UserDetails{
   private String password;
   private String email;
   private String tipo_usuario; // "ALUNO", "PROFESSOR", etc.
-  @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "usuario_roles", joinColumns = @JoinColumn(name = "usuario_id"))
-  @Column(name = "role")
-  private List<String> roles;
+  private String roles;
 
-  public Usuario(UsuarioDTO usuarioDTO){
+  private Boolean verificado;
+  private String token;
+  private LocalDateTime expiracaoToken;
+
+  public Usuario(UsuarioDTO usuarioDTO,String senhaCriptografada){
     this.setUsername(usuarioDTO.username());
-    this.setPassword(usuarioDTO.password());
+    this.setPassword(senhaCriptografada);
     this.setEmail(usuarioDTO.email());
     this.setTipo_usuario(usuarioDTO.tipo_usuario());
-    this.setRoles(usuarioDTO.roles());
+    this.setRoles("TESTE");
+    this.setVerificado(false);
+    this.setToken(UUID.randomUUID().toString());
+    this.expiracaoToken=LocalDateTime.now().plusMinutes(30);
   }
 
   @Override

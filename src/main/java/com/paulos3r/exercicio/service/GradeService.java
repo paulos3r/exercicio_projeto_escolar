@@ -3,6 +3,7 @@ package com.paulos3r.exercicio.service;
 import com.paulos3r.exercicio.dto.GradeDTO;
 import com.paulos3r.exercicio.model.Grade;
 import com.paulos3r.exercicio.repository.GradeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class GradeService {
   public List<Grade> findAllGrade() throws Exception {
     return this.repository.findAll();
   }
-
+  @Transactional
   public Grade saveAluno(GradeDTO gradeDTO) throws Exception {
     this.turmaService.findTurmaById(gradeDTO.turma_id().getId());
     this.ministranteService.findMinistranteById(gradeDTO.ministrante_id().getId());
@@ -35,7 +36,7 @@ public class GradeService {
 
     return this.repository.save(grade);
   }
-
+  @Transactional
   public Grade updateGrade(Long id, GradeDTO gradeDTO) throws Exception {
     this.turmaService.findTurmaById(gradeDTO.turma_id().getId());
     this.ministranteService.findMinistranteById(gradeDTO.ministrante_id().getId());
@@ -46,7 +47,7 @@ public class GradeService {
 
     return this.repository.save(grade);
   }
-
+  @Transactional
   public void deleteGrade(Long id) throws Exception {
     var grade = this.repository.findById(id).orElseThrow(()->new Exception("Grade não encontrada"));
     this.repository.delete(grade);

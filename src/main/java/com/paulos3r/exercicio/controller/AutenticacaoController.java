@@ -1,7 +1,10 @@
 package com.paulos3r.exercicio.controller;
 
 import com.paulos3r.exercicio.dto.AutenticacaoDTO;
+import com.paulos3r.exercicio.dto.TokenDTO;
+import com.paulos3r.exercicio.dto.TokenRefreshDTO;
 import com.paulos3r.exercicio.model.Usuario;
+import com.paulos3r.exercicio.repository.UsuarioRepository;
 import com.paulos3r.exercicio.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +23,36 @@ public class AutenticacaoController {
 
   private final TokenService tokenService;
 
-  public AutenticacaoController(AuthenticationManager authenticationManager, TokenService tokenService) {
+  private final UsuarioRepository usuarioRepository;
+
+  public AutenticacaoController(AuthenticationManager authenticationManager, TokenService tokenService, UsuarioRepository usuarioRepository) {
     this.authenticationManager = authenticationManager;
     this.tokenService = tokenService;
+    this.usuarioRepository = usuarioRepository;
   }
 
   @PostMapping
-  public ResponseEntity<String> login(@Valid @RequestBody AutenticacaoDTO autenticacaoDTO) throws Exception {
+  public ResponseEntity<TokenDTO> login(@Valid @RequestBody AutenticacaoDTO autenticacaoDTO) throws Exception {
     var tokenAutenticacao =  new UsernamePasswordAuthenticationToken(autenticacaoDTO.username(), autenticacaoDTO.password());
     var autenticacao = authenticationManager.authenticate(tokenAutenticacao);
 
     String tokenAcesso = tokenService.token( (Usuario) autenticacao.getPrincipal());
 
-    return ResponseEntity.ok(tokenAcesso);
+    String tokenRefresh = tokenService.RefreshToken((Usuario) autenticacao.getPrincipal());
+
+    return ResponseEntity.ok(new TokenDTO( tokenAcesso, tokenRefresh ) );
+  }
+
+  @PostMapping("/atualizar")
+  public ResponseEntity<TokenDTO> atualizarToken( @Valid  @RequestBody TokenRefreshDTO tokenRefresh) throws Exception {
+    var token = tokenRefresh.tokenRefresh();
+    Long usuario_id = Long.valueOf( tokenService.verificarToken(token) );
+    var usuario = this.usuarioRepository.findById(usuario_id).orElseThrow();
+
+    String tokenAcesso = tokenService.token( usuario );
+
+    String refreshToken = tokenService.RefreshToken( usuario );
+
+    return ResponseEntity.ok(new TokenDTO( tokenAcesso, refreshToken ) );
   }
 }

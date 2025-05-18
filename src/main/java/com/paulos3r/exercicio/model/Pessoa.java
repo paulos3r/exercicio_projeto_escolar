@@ -1,6 +1,7 @@
 package com.paulos3r.exercicio.model;
 
 import com.paulos3r.exercicio.dto.PessoaDTO;
+import com.paulos3r.exercicio.dto.UsuarioDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,14 +33,15 @@ public class Pessoa {
   private Usuario usuario;
 
 
-  public Pessoa(PessoaDTO pessoaDTO){
+  public Pessoa(PessoaDTO pessoaDTO, Usuario usuario){
     this.nome = pessoaDTO.nome();
     this.cpf = pessoaDTO.cpf();
     this.data_nascimento = pessoaDTO.data_nascimento();
     this.endereco = pessoaDTO.endereco();
     this.telefone = pessoaDTO.telefone();
-    this.usuario = pessoaDTO.usuario();
+    this.usuario = usuario;
   }
+
   public void atualizarPessoa(PessoaDTO pessoaDTO){
     this.setCpf(pessoaDTO.cpf());
     this.setNome(pessoaDTO.nome());

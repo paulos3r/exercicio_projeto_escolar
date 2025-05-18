@@ -6,6 +6,7 @@ import com.paulos3r.exercicio.model.Curso;
 import com.paulos3r.exercicio.model.Turma;
 import com.paulos3r.exercicio.repository.CursoRepository;
 import com.paulos3r.exercicio.repository.TurmaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +28,13 @@ public class TurmaService {
   public List<Turma> findAllTurma() throws Exception {
     return this.repository.findAll();
   }
-
+  @Transactional
   public Turma saveTurma(TurmaDTO turmaDTO){
     Turma turma = new Turma(turmaDTO);
     this.repository.save(turma);
     return turma;
   }
-
+  @Transactional
   public Turma updateTurma(Long id, TurmaDTO turmaDTO) throws Exception{
     Turma turma = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
 
@@ -41,7 +42,7 @@ public class TurmaService {
 
     return this.repository.save(turma);
   }
-
+  @Transactional
   public void deleteTurma(Long id) throws Exception{
     Turma turma = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
     turma.deleteTurma();

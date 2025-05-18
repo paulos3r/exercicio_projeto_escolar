@@ -1,8 +1,11 @@
 package com.paulos3r.exercicio.service;
 
 import com.paulos3r.exercicio.dto.PessoaDTO;
+import com.paulos3r.exercicio.dto.UsuarioDTO;
 import com.paulos3r.exercicio.model.Pessoa;
+import com.paulos3r.exercicio.model.Usuario;
 import com.paulos3r.exercicio.repository.PessoaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +25,20 @@ public class PessoaService {
     return this.repository.findAll();
   }
 
-  public Pessoa createPessoa(PessoaDTO pessoaDTO) throws Exception{
-      Pessoa pessoa = new Pessoa(pessoaDTO);
+  @Transactional
+  public Pessoa createPessoa(PessoaDTO pessoaDTO, Usuario usuario) throws Exception{
+      Pessoa pessoa = new Pessoa(pessoaDTO, usuario);
       this.repository.save(pessoa);
       return pessoa;
   }
-
+  @Transactional
   public Pessoa updatePessoa(Long id, PessoaDTO pessoaDTO) throws Exception{
     Pessoa pessoaIsPresent = this.repository.findById(id).orElseThrow(()-> new Exception("Não encontrado"));
     pessoaIsPresent.atualizarPessoa(pessoaDTO);
 
     return this.repository.save(pessoaIsPresent);
 }
-
+  @Transactional
   public void deletePessoa(Long id) throws Exception{
       this.repository.findById(id).orElseThrow(()-> new Exception("Cadastro não encontrado"));
       this.repository.deleteById(id);

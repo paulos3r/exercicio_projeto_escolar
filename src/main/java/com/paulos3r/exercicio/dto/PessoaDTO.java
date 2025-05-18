@@ -9,6 +9,5 @@ public record PessoaDTO( Long id,
                          String cpf,
                          LocalDate data_nascimento,
                          String endereco,
-                         String telefone,
-                         Usuario usuario) {
+                         String telefone) {
 }

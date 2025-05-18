@@ -1,7 +1,6 @@
 package com.paulos3r.exercicio.configuration;
 
 import com.paulos3r.exercicio.component.FiltroTokenAcessoComponent;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +26,12 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     return httpSecurity
+            .authorizeHttpRequests(
+                    req-> {
+                      req.requestMatchers("/login","/login/atualizar","/usuario").permitAll();
+                      req.anyRequest().authenticated();
+                    }
+            )
             .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .csrf(csrf->csrf.disable())
             .addFilterBefore(filtroTokenAcessoComponent, UsernamePasswordAuthenticationFilter.class)

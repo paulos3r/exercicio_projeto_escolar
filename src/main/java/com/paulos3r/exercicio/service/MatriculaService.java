@@ -3,6 +3,7 @@ package com.paulos3r.exercicio.service;
 import com.paulos3r.exercicio.dto.MatriculaDTO;
 import com.paulos3r.exercicio.model.Matricula;
 import com.paulos3r.exercicio.repository.MatriculaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class MatriculaService {
   public Matricula findMatriculaById(Long id) throws Exception {
     return this.repository.findById(id).orElseThrow(()->new Exception("Matricula não encontrada"));
   }
-
+  @Transactional
   public Matricula saveMatricula(MatriculaDTO matriculaDTO) throws Exception {
     this.alunoService.findAlunoById(matriculaDTO.aluno_id().getId());
     this.turmaService.findTurmaById(matriculaDTO.turma_id().getId());
@@ -35,7 +36,7 @@ public class MatriculaService {
     var matricula = new Matricula(matriculaDTO);
     return this.repository.save(matricula);
   }
-
+  @Transactional
   public Matricula updateMatricula(Long id, MatriculaDTO matriculaDTO) throws Exception {
     this.alunoService.findAlunoById(matriculaDTO.aluno_id().getId());
     this.turmaService.findTurmaById(matriculaDTO.turma_id().getId());
