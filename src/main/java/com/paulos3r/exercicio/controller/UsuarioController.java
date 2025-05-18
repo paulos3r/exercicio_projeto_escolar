@@ -28,4 +28,10 @@ public class UsuarioController {
   public ResponseEntity<List<Usuario>> getUsuario(){
     return ResponseEntity.ok(this.usuarioService.findAllUsuario());
   }
+
+  @GetMapping("/verificar-conta")
+  public ResponseEntity<String> verificarEmail(@RequestParam String codigo){
+    usuarioService.verificarEmail(codigo);
+    return ResponseEntity.ok("Conta verificada com sucesso");
+  }
 }

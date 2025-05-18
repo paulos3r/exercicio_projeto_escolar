@@ -21,9 +21,12 @@ public class UsuarioService implements UserDetailsService {
 
   private final PasswordEncoder passwordEncoder;
 
-  public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder){
+  private final EmailService emailService;
+
+  public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService){
     this.usuarioRepository = usuarioRepository;
     this.passwordEncoder = passwordEncoder;
+    this.emailService = emailService;
   }
 
   @Override
@@ -48,6 +51,15 @@ public class UsuarioService implements UserDetailsService {
 
     var senhaCriptografada=passwordEncoder.encode(usuarioDTO.password());
     var usuario = new Usuario(usuarioDTO, senhaCriptografada);
+
+    emailService.enviarEmailVerificacao(usuario);
     return this.usuarioRepository.save(usuario);
+  }
+
+  @Transactional
+  public void verificarEmail(String codigo) {
+    var usuario = usuarioRepository.findByToken(codigo).orElseThrow();
+
+    usuario.verificar();
   }
 }

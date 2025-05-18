@@ -1,6 +1,7 @@
 package com.paulos3r.exercicio.model;
 
 import com.paulos3r.exercicio.dto.UsuarioDTO;
+import com.paulos3r.exercicio.infraestrutura.exception.RegraDeNegocioException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,6 +51,15 @@ public class Usuario implements UserDetails{
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities(){
     return null;
+  }
+  public void verificar(){
+
+    if(expiracaoToken.isBefore(LocalDateTime.now()))
+      throw new RegraDeNegocioException("Link de verificação expirou!");
+
+    this.setVerificado(true);
+    this.setToken(null);
+    this.setExpiracaoToken(null);
   }
 /* FUTURAMENTE TEM QUE IMPLEMENTAR
   @Override
