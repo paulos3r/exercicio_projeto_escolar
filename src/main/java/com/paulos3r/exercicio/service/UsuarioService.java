@@ -5,6 +5,7 @@ import com.paulos3r.exercicio.infraestrutura.exception.RegraDeNegocioException;
 import com.paulos3r.exercicio.model.Usuario;
 import com.paulos3r.exercicio.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -61,5 +62,20 @@ public class UsuarioService implements UserDetailsService {
     var usuario = usuarioRepository.findByToken(codigo).orElseThrow();
 
     usuario.verificar();
+  }
+
+  public Object buscarPeloNomeUsuario(String nomeUsuario) {
+    return null;
+  }
+
+  public Object editarPerfil(Usuario logado, @Valid UsuarioDTO dados) {
+    return null;
+  }
+
+  public void alterarSenha(@Valid UsuarioDTO dados, Usuario logado) {
+  }
+
+  public void desativarUsuario(Usuario logado) {
+
   }
 }

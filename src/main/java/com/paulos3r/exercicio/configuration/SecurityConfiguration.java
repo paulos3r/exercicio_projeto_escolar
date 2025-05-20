@@ -28,7 +28,7 @@ public class SecurityConfiguration {
     return httpSecurity
             .authorizeHttpRequests(
                     req-> {
-                      req.requestMatchers("/login","/login/atualizar","/usuario","/usuario/verificar-conta").permitAll();
+                      req.requestMatchers("/login","/login/atualizar","/registrar","/verificar-conta").permitAll();
                       req.anyRequest().authenticated();
                     }
             )

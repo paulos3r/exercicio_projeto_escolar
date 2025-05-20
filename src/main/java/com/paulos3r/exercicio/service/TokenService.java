@@ -19,37 +19,33 @@ public class TokenService {
 
   public String token(Usuario usuario){
     try {
-      Algorithm algorithm = Algorithm.HMAC256("123456789");
+      Algorithm algorithm = Algorithm.HMAC256("12345678");
       return JWT.create()
               .withIssuer("exercicio")
               .withSubject(usuario.getUsername())
               .withExpiresAt(expiracao(30))
               .sign(algorithm);
     } catch (JWTCreationException exception){
-      throw new RegraDeNegocioException("Erro ao gerar token JWT de acesso");
+      throw new RegraDeNegocioException("Erro ao Criar token JWT de acesso");
     }
   }
   public String RefreshToken(Usuario usuario) throws Exception {
     try {
-      Algorithm algorithm = Algorithm.HMAC256("123456789");
+      Algorithm algorithm = Algorithm.HMAC256("12345678");
       return JWT.create()
               .withIssuer("exercicio")
               .withSubject(usuario.getId().toString())
               .withExpiresAt(expiracao(120))
               .sign(algorithm);
     } catch (JWTCreationException exception){
-      throw new Exception("Erro ao gerar token JWT de acesso");
+      throw new Exception("Erro ao no refresh do token token JWT de acesso");
     }
-  }
-
-  private Instant expiracao(Integer minutos) {
-    return LocalDateTime.now(ZoneOffset.of("-03:00")).plusMinutes(minutos).toInstant(ZoneOffset.UTC);
   }
 
   public String verificarToken(String token) throws Exception {
     DecodedJWT decodedJWT;
     try {
-      Algorithm algorithm = Algorithm.HMAC256("123456789");
+      Algorithm algorithm = Algorithm.HMAC256("12345678");
       JWTVerifier verifier = JWT.require(algorithm)
               // specify any specific claim validations
               .withIssuer("exercicio")
@@ -60,7 +56,11 @@ public class TokenService {
       return decodedJWT.getSubject();
     } catch (JWTVerificationException exception){
       // Invalid signature/claims
-      throw new Exception("Erro ao gerar token JWT de acesso");
+      throw new Exception("Erro ao verificar o token JWT de acesso" + exception.getMessage());
     }
+  }
+
+  private Instant expiracao(Integer minutos) {
+    return LocalDateTime.now().plusMinutes(minutos).toInstant(ZoneOffset.of("-03:00"));
   }
 }
