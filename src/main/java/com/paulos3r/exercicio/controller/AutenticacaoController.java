@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("login")
+@RequestMapping("/autenticar")
 public class AutenticacaoController {
 
   private final AuthenticationManager authenticationManager;
@@ -31,7 +31,7 @@ public class AutenticacaoController {
     this.usuarioRepository = usuarioRepository;
   }
 
-  @PostMapping
+  @PostMapping("/login")
   public ResponseEntity<TokenDTO> login(@Valid @RequestBody AutenticacaoDTO autenticacaoDTO) throws Exception {
     var tokenAutenticacao =  new UsernamePasswordAuthenticationToken(autenticacaoDTO.username(), autenticacaoDTO.password());
     var autenticacao = authenticationManager.authenticate(tokenAutenticacao);

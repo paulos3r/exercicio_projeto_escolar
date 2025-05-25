@@ -10,8 +10,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
-@RequestMapping
+@RequestMapping("/usuario")
 public class UsuarioController {
 
   private final UsuarioService usuarioService;
@@ -37,6 +39,11 @@ public class UsuarioController {
     var usuario = usuarioService.buscarPeloNomeUsuario(nomeUsuario);
     return ResponseEntity.ok(new UsuarioListagemDTO((Usuario) usuario));
   }
+  @GetMapping
+  public ResponseEntity<List<Usuario>> getAllUsuarios(){
+    var usuarios = usuarioService.findAllUsuario();
+    return ResponseEntity.ok(usuarios);
+  }
 
   @PutMapping("/editar-perfil")
   public ResponseEntity<UsuarioListagemDTO> editarPerfil(@RequestBody @Valid UsuarioDTO dados, @AuthenticationPrincipal Usuario logado){
@@ -44,7 +51,7 @@ public class UsuarioController {
     return ResponseEntity.ok(new UsuarioListagemDTO((Usuario) usuario));
   }
 
-  @PatchMapping("alterar-senha")
+  @PatchMapping("/alterar-senha")
   public ResponseEntity<Void> alterarSenha(@RequestBody @Valid UsuarioDTO dados, @AuthenticationPrincipal Usuario logado){
     usuarioService.alterarSenha(dados, logado);
     return ResponseEntity.noContent().build();

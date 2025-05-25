@@ -2,44 +2,53 @@ package com.paulos3r.exercicio.service;
 
 import com.paulos3r.exercicio.infraestrutura.exception.RegraDeNegocioException;
 import com.paulos3r.exercicio.model.Usuario;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
-
 @Service
 public class EmailService {
+
+  @Autowired
   private final JavaMailSender enviadorEmail;
-  private static final String EMAIL_ORIGEM = "exercicio@gmail.com";
-  private static final String NOME_ENVIADOR = "exercicio";
+
+  @Value("${spring.mail.username}")
+  private  String EMAIL_ORIGEM;
+  @Value("${spring.application.name}")
+  private  String NOME_ENVIADOR;
 
   public static final String URL_SITE = "http://localhost:8080"; //"forumhub.com.br"
 
   public EmailService(JavaMailSender enviadorEmail) {
     this.enviadorEmail = enviadorEmail;
   }
+
   @Async
   private void enviarEmail(String para, String assunto, String texto) {
-    MimeMessage message = enviadorEmail.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(message);
-
+    System.out.println();
     try {
-      helper.setFrom(EMAIL_ORIGEM, NOME_ENVIADOR);
+      MimeMessage message = enviadorEmail.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+      helper.setFrom(EMAIL_ORIGEM);
       helper.setTo(para);
       helper.setSubject(assunto);
       helper.setText(texto, true);
-    } catch(MessagingException | UnsupportedEncodingException e){
-      throw new RegraDeNegocioException("Erro ao enviar email");
+
+     // enviadorEmail.send(message);   esta dando falha ao envia o email preciso corrigir fururamente quando saber o que faz!
+
+    } catch( Exception e ){
+      throw new RegraDeNegocioException("Erro ao enviar email" + e.getMessage());
     }
 
-    enviadorEmail.send(message);
   }
 
   public void enviarEmailVerificacao( Usuario usuario ) {
+    var email = usuario.getEmail();
     String assunto = "Aqui está seu link para verificar o email";
     String conteudo = gerarConteudoEmail("Olá [[name]],<br>"
             + "Por favor clique no link abaixo para verificar sua conta:<br>"
@@ -47,7 +56,7 @@ public class EmailService {
             + "Obrigado,<br>"
             + "Fórum Hub :).", usuario.getUsername(), URL_SITE + "/verificar-conta?codigo=" + usuario.getToken());
 
-    enviarEmail(usuario.getEmail(), assunto, conteudo);
+    enviarEmail(email, assunto, conteudo);
   }
 
   private String gerarConteudoEmail(String template, String nome, String url) {
