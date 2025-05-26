@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.controller;
 
+import com.paulos3r.exercicio.dto.PerfilDTO;
 import com.paulos3r.exercicio.dto.UsuarioDTO;
 import com.paulos3r.exercicio.dto.UsuarioListagemDTO;
 import com.paulos3r.exercicio.model.Usuario;
@@ -10,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -24,8 +26,11 @@ public class UsuarioController {
 
   @PostMapping("/registrar")
   public ResponseEntity<Usuario> postUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO, UriComponentsBuilder uriComponentsBuilder){
-      var usuario  = usuarioService.saveUsuario(usuarioDTO);
-      return ResponseEntity.ok(usuario);
+    var usuario  = usuarioService.saveUsuario(usuarioDTO);
+    URI uri = uriComponentsBuilder.path("/usuarios/{id}")
+            .buildAndExpand(usuario.getId())
+            .toUri();
+    return ResponseEntity.created(uri).body(usuario);
   }
 
   @GetMapping("/verificar-conta")
@@ -55,6 +60,18 @@ public class UsuarioController {
   public ResponseEntity<Void> alterarSenha(@RequestBody @Valid UsuarioDTO dados, @AuthenticationPrincipal Usuario logado){
     usuarioService.alterarSenha(dados, logado);
     return ResponseEntity.noContent().build();
+  }
+
+  @PatchMapping("/adicionar-perfil/{id}")
+  public ResponseEntity<UsuarioListagemDTO> adicionarPerfil(@PathVariable Long id, @RequestBody @Valid PerfilDTO perfilDTO, @AuthenticationPrincipal Usuario logado){
+    var usuario = usuarioService.adcionarPerfil(id, perfilDTO);
+    return ResponseEntity.ok(new UsuarioListagemDTO((Usuario) usuario));
+  }
+
+  @PatchMapping("remover-perfil/{id}")
+  public ResponseEntity<UsuarioListagemDTO> removerPerfil(@PathVariable Long id, @RequestBody @Valid PerfilDTO dados){
+    var usuario = usuarioService.removerPerfil(id, dados);
+    return ResponseEntity.ok(new UsuarioListagemDTO(usuario));
   }
 
   @DeleteMapping("/desativar")

@@ -20,12 +20,14 @@ public class Pessoa {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  @Column(length = 100)
   private String nome;
-  @Column(unique = true)
+  @Column(unique = true, length = 14)
   private String cpf;
   @DateTimeFormat(pattern = "yyyy-mm-dd")
   private LocalDate data_nascimento;
   private String endereco;
+  @Column(length = 15)
   private String telefone;
 
   @OneToOne

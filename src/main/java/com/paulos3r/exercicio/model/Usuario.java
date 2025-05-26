@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -29,28 +30,34 @@ public class Usuario implements UserDetails{
   private Long id;
   private String username;
   private String password;
+  @Column(length = 100)
   private String email;
-  private String tipo_usuario; // "ALUNO", "PROFESSOR", etc.
-  private String roles;
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name="usuarios_roles",
+              joinColumns = @JoinColumn(name = "usuario_id"),
+              inverseJoinColumns = @JoinColumn(name = "perfil_id")
+  )
+  private List<Perfil> roles = new ArrayList<>();
 
   private Boolean verificado;
+  @Column(length = 64)
   private String token;
   private LocalDateTime expiracaoToken;
 
-  public Usuario(UsuarioDTO usuarioDTO,String senhaCriptografada){
+  public Usuario(UsuarioDTO usuarioDTO,String senhaCriptografada, Perfil perfil){
     this.setUsername(usuarioDTO.username());
     this.setPassword(senhaCriptografada);
     this.setEmail(usuarioDTO.email());
-    this.setTipo_usuario(usuarioDTO.tipo_usuario());
-    this.setRoles("TESTE");
     this.setVerificado(false);
     this.setToken(UUID.randomUUID().toString());
     this.expiracaoToken=LocalDateTime.now().plusMinutes(30);
+    this.roles.add(perfil);
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities(){
-    return null;
+    return roles;
   }
   public void verificar(){
 
@@ -60,6 +67,14 @@ public class Usuario implements UserDetails{
     this.setVerificado(true);
     this.setToken(null);
     this.setExpiracaoToken(null);
+  }
+
+  public void adicionarPerfil(Perfil perfil) {
+    this.roles.add(perfil);
+  }
+
+  public void removerPerfil(Perfil perfil) {
+    this.roles.remove(perfil);
   }
 /* FUTURAMENTE TEM QUE IMPLEMENTAR
   @Override

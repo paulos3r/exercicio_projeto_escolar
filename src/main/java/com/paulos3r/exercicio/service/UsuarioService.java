@@ -1,8 +1,11 @@
 package com.paulos3r.exercicio.service;
 
+import com.paulos3r.exercicio.dto.PerfilDTO;
 import com.paulos3r.exercicio.dto.UsuarioDTO;
 import com.paulos3r.exercicio.infraestrutura.exception.RegraDeNegocioException;
+import com.paulos3r.exercicio.model.PerfilNome;
 import com.paulos3r.exercicio.model.Usuario;
+import com.paulos3r.exercicio.repository.PerfilRepository;
 import com.paulos3r.exercicio.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -24,25 +27,33 @@ public class UsuarioService implements UserDetailsService {
 
   private final EmailService emailService;
 
-  public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService){
+  private final PerfilRepository perfilRepository;
+
+  public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService, PerfilRepository perfilRepository) {
     this.usuarioRepository = usuarioRepository;
     this.passwordEncoder = passwordEncoder;
     this.emailService = emailService;
+    this.perfilRepository = perfilRepository;
   }
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return usuarioRepository.findByUsernameIgnoreCase(username).orElseThrow(()->new UsernameNotFoundException("o usuario não foi encontrado"));
+    return usuarioRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("o usuario não foi encontrado"));
   }
 
-  public List<Usuario> findAllUsuario(){
+  public List<Usuario> findAllUsuario() {
     return this.usuarioRepository.findAll();
   }
 
   @Transactional
   public Usuario saveUsuario(UsuarioDTO usuarioDTO) {
 
-    Optional<Usuario> verificarExistenciaUsuario = usuarioRepository.findByEmailIgnoreCaseAndVerificadoTrue( usuarioDTO.email());
+    var senhaCriptografada = passwordEncoder.encode(usuarioDTO.password());
+
+    var perfil = perfilRepository.findByNome(PerfilNome.ESTUDANTE);
+    var usuario = new Usuario(usuarioDTO, senhaCriptografada, perfil);
+
+    Optional<Usuario> verificarExistenciaUsuario = usuarioRepository.findByEmailIgnoreCaseAndVerificadoTrue(usuarioDTO.email());
 
     if (verificarExistenciaUsuario.isPresent())
       throw new RegraDeNegocioException("Já existe uma conta cadastrada com esse email ou nome de usuario");
@@ -50,11 +61,8 @@ public class UsuarioService implements UserDetailsService {
     if (!usuarioDTO.password().equals(usuarioDTO.confirmacaoPassword()))
       throw new RegraDeNegocioException("Senha não bate com a confirmação de senha!");
 
-    var senhaCriptografada=passwordEncoder.encode(usuarioDTO.password());
-    var usuario = new Usuario(usuarioDTO, senhaCriptografada);
-
     emailService.enviarEmailVerificacao(usuario);
-    return this.usuarioRepository.save(usuario);
+    return usuarioRepository.save(usuario);
   }
 
   @Transactional
@@ -64,18 +72,37 @@ public class UsuarioService implements UserDetailsService {
     usuario.verificar();
   }
 
-  public Object buscarPeloNomeUsuario(String nomeUsuario) {
+  public Usuario buscarPeloNomeUsuario(String nomeUsuario) {
     return null;
   }
 
-  public Object editarPerfil(Usuario logado, @Valid UsuarioDTO dados) {
+  public Usuario editarPerfil(Usuario logado, @Valid UsuarioDTO dados) {
     return null;
   }
 
-  public void alterarSenha(@Valid UsuarioDTO dados, Usuario logado) {
+  public void alterarSenha(@Valid UsuarioDTO usuarioDTO, Usuario logado) {
   }
 
   public void desativarUsuario(Usuario logado) {
 
   }
+
+  @Transactional
+  public Usuario adcionarPerfil(Long id, @Valid PerfilDTO perfilDTO) {
+    var usuario = usuarioRepository.findById(id).orElseThrow();
+
+    var perfil = perfilRepository.findByNome(perfilDTO.perfilNome());
+
+    usuario.adicionarPerfil(perfil);
+
+    return usuario;
+  }
+
+  public Usuario removerPerfil(Long id, @Valid PerfilDTO dados) {
+    var usuario = usuarioRepository.findById(id).orElseThrow();
+    var perfil = perfilRepository.findByNome(dados.perfilNome());
+    usuario.removerPerfil(perfil);
+    return usuario;
+  }
+
 }

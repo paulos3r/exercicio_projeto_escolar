@@ -23,6 +23,7 @@ public class Turma {
   private String nome;
   private LocalDate data_inicio;
   private LocalDate data_final;
+  @Column(length = 50)
   private String horario;
   private String sala;
   @Enumerated(EnumType.STRING)

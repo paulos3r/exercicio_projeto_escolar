@@ -17,9 +17,9 @@ public class EmailService {
   private final JavaMailSender enviadorEmail;
 
   @Value("${spring.mail.username}")
-  private  String EMAIL_ORIGEM;
+  private String EMAIL_ORIGEM;
   @Value("${spring.application.name}")
-  private  String NOME_ENVIADOR;
+  private String NOME_ENVIADOR;
 
   public static final String URL_SITE = "http://localhost:8080"; //"forumhub.com.br"
 
@@ -29,25 +29,24 @@ public class EmailService {
 
   @Async
   private void enviarEmail(String para, String assunto, String texto) {
-    System.out.println();
     try {
       MimeMessage message = enviadorEmail.createMimeMessage();
-      MimeMessageHelper helper = new MimeMessageHelper(message,true);
+      MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
       helper.setFrom(EMAIL_ORIGEM);
       helper.setTo(para);
       helper.setSubject(assunto);
       helper.setText(texto, true);
 
-     // enviadorEmail.send(message);   esta dando falha ao envia o email preciso corrigir fururamente quando saber o que faz!
+      // enviadorEmail.send(message);   esta dando falha ao envia o email preciso corrigir fururamente quando saber o que faz!
 
-    } catch( Exception e ){
+    } catch (Exception e) {
       throw new RegraDeNegocioException("Erro ao enviar email" + e.getMessage());
     }
 
   }
 
-  public void enviarEmailVerificacao( Usuario usuario ) {
+  public void enviarEmailVerificacao(Usuario usuario) {
     var email = usuario.getEmail();
     String assunto = "Aqui está seu link para verificar o email";
     String conteudo = gerarConteudoEmail("Olá [[name]],<br>"
