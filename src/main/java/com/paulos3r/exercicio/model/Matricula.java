@@ -5,14 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "matricula")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
 public class Matricula {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +31,56 @@ public class Matricula {
     if (matriculaDTO.turma_id()!=null) this.setTurma_id(matriculaDTO.turma_id());
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public Aluno getAluno_id() {
+    return aluno_id;
+  }
+
+  public void setAluno_id(Aluno aluno_id) {
+    this.aluno_id = aluno_id;
+  }
+
+  public Turma getTurma_id() {
+    return turma_id;
+  }
+
+  public void setTurma_id(Turma turma_id) {
+    this.turma_id = turma_id;
+  }
+
+  public LocalDateTime getData_matricula() {
+    return data_matricula;
+  }
+
+  public void setData_matricula(LocalDateTime data_matricula) {
+    this.data_matricula = data_matricula;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Matricula matricula)) return false;
+    return Objects.equals(id, matricula.id) && Objects.equals(aluno_id, matricula.aluno_id) && Objects.equals(turma_id, matricula.turma_id) && Objects.equals(data_matricula, matricula.data_matricula);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, aluno_id, turma_id, data_matricula);
+  }
+
+  @Override
+  public String toString() {
+    return "Matricula{" +
+            "id=" + id +
+            ", aluno_id=" + aluno_id +
+            ", turma_id=" + turma_id +
+            ", data_matricula=" + data_matricula +
+            '}';
+  }
 }

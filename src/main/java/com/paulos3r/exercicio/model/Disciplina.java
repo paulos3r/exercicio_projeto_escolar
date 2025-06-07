@@ -2,15 +2,9 @@ package com.paulos3r.exercicio.model;
 
 import com.paulos3r.exercicio.dto.DisciplinaDTO;
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "disciplina")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
 public class Disciplina {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +37,61 @@ public class Disciplina {
   public void deleteDisciplina(){
     setStatus(Status.INATIVO);
   }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getNome() {
+    return nome;
+  }
+
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  public String getEmenta() {
+    return ementa;
+  }
+
+  public void setEmenta(String ementa) {
+    this.ementa = ementa;
+  }
+
+  public Double getCarga_horaria() {
+    return carga_horaria;
+  }
+
+  public void setCarga_horaria(Double carga_horaria) {
+    this.carga_horaria = carga_horaria;
+  }
+
+  public Integer getPorcentagem_teoria() {
+    return porcentagem_teoria;
+  }
+
+  public void setPorcentagem_teoria(Integer porcentagem_teoria) {
+    this.porcentagem_teoria = porcentagem_teoria;
+  }
+
+  public Integer getPorcentagem_pratica() {
+    return porcentagem_pratica;
+  }
+
+  public void setPorcentagem_pratica(Integer porcentagem_pratica) {
+    this.porcentagem_pratica = porcentagem_pratica;
+  }
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
+  }
+
 }

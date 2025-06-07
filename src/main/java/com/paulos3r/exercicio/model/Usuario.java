@@ -12,17 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "usuario")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Usuario implements UserDetails{
 
   @Id
@@ -76,23 +69,95 @@ public class Usuario implements UserDetails{
   public void removerPerfil(Perfil perfil) {
     this.roles.remove(perfil);
   }
-/* FUTURAMENTE TEM QUE IMPLEMENTAR
-  @Override
-  public boolean isAccountNonExpired() {
-    return !dataExpiracaoConta.isBefore(LocalDate.now());
-  }
-  @Override
-  public boolean isAccountNonLocked() {
-    return tentativasLogin < MAX_TENTATIVAS;
-  }
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return dataUltimaMudancaSenha.isAfter(LocalDate.now().minusDays(DIAS_EXPIRACAO_SENHA));
-  }
-  @Override
-  public boolean isEnabled() {
-    return ativo;
+
+  public Long getId() {
+    return id;
   }
 
- */
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  @Override
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  @Override
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public List<Perfil> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Perfil> roles) {
+    this.roles = roles;
+  }
+
+  public Boolean getVerificado() {
+    return verificado;
+  }
+
+  public void setVerificado(Boolean verificado) {
+    this.verificado = verificado;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
+
+  public LocalDateTime getExpiracaoToken() {
+    return expiracaoToken;
+  }
+
+  public void setExpiracaoToken(LocalDateTime expiracaoToken) {
+    this.expiracaoToken = expiracaoToken;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Usuario usuario)) return false;
+    return Objects.equals(id, usuario.id) && Objects.equals(username, usuario.username) && Objects.equals(password, usuario.password) && Objects.equals(email, usuario.email) && Objects.equals(roles, usuario.roles) && Objects.equals(verificado, usuario.verificado) && Objects.equals(token, usuario.token) && Objects.equals(expiracaoToken, usuario.expiracaoToken);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, username, password, email, roles, verificado, token, expiracaoToken);
+  }
+
+  @Override
+  public String toString() {
+    return "Usuario{" +
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            ", email='" + email + '\'' +
+            ", roles=" + roles +
+            ", verificado=" + verificado +
+            ", token='" + token + '\'' +
+            ", expiracaoToken=" + expiracaoToken +
+            '}';
+  }
 }

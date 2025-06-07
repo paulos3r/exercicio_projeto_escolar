@@ -4,13 +4,10 @@ import com.paulos3r.exercicio.dto.MinistranteDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "ministrante")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
 public class Ministrante {
 
   @Id
@@ -33,5 +30,49 @@ public class Ministrante {
   public void updateMinistrante(MinistranteDTO ministranteDTO){
     if (ministranteDTO.docente_id()!=null) this.setDocente_id(ministranteDTO.docente_id());
     if (ministranteDTO.disciplina_id()!=null) this.setDisciplina_id(ministranteDTO.disciplina_id());
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public Docente getDocente_id() {
+    return docente_id;
+  }
+
+  public void setDocente_id(Docente docente_id) {
+    this.docente_id = docente_id;
+  }
+
+  public Disciplina getDisciplina_id() {
+    return disciplina_id;
+  }
+
+  public void setDisciplina_id(Disciplina disciplina_id) {
+    this.disciplina_id = disciplina_id;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Ministrante that)) return false;
+    return Objects.equals(id, that.id) && Objects.equals(docente_id, that.docente_id) && Objects.equals(disciplina_id, that.disciplina_id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, docente_id, disciplina_id);
+  }
+
+  @Override
+  public String toString() {
+    return "Ministrante{" +
+            "id=" + id +
+            ", docente_id=" + docente_id +
+            ", disciplina_id=" + disciplina_id +
+            '}';
   }
 }

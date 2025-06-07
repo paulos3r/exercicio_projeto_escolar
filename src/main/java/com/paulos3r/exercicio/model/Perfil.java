@@ -18,4 +18,28 @@ public class Perfil implements GrantedAuthority {
   public String getAuthority() {
     return "ROLE_"+nome;
   }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public PerfilNome getNome() {
+    return nome;
+  }
+
+  public void setNome(PerfilNome nome) {
+    this.nome = nome;
+  }
+
+  @Override
+  public String toString() {
+    return "Perfil{" +
+            "id=" + id +
+            ", nome=" + nome +
+            '}';
+  }
 }
