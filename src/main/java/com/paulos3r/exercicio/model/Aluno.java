@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.model;
 
-import com.paulos3r.exercicio.dto.AlunoDTO;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -23,24 +22,20 @@ public class Aluno {
   }
 
   public Aluno(Long id, Pessoa pessoa_id, Status aluno_especial, Status status) {
+    if ((aluno_especial != Status.ATIVO && aluno_especial != Status.INATIVO) ) throw  new IllegalArgumentException("Aluno especial não foi informado");
+    if ( status==null ) throw  new IllegalArgumentException("status não foi informado");
     this.id = id;
     this.pessoa_id = pessoa_id;
     this.aluno_especial = aluno_especial;
     this.status = status;
   }
 
-  public Aluno(AlunoDTO alunoDTO){
-    this.setPessoa_id(alunoDTO.pessoa_id());
-    this.setAluno_especial(alunoDTO.aluno_especial());
-    this.setStatus(Status.ATIVO);
-  }
-
-  public void atualizarAluno(AlunoDTO alunoDTO){
-    if ( alunoDTO.pessoa_id() != null ) this.setPessoa_id(alunoDTO.pessoa_id());
-    if ( alunoDTO.aluno_especial() != null ) this.setAluno_especial(alunoDTO.aluno_especial());
-  }
-  public void excluirAluno(){
-    this.setStatus(Status.INATIVO);
+  public Aluno(Pessoa pessoa_id, Status aluno_especial, Status status) {
+    if ((aluno_especial != Status.ATIVO && aluno_especial != Status.INATIVO) ) throw  new IllegalArgumentException("Aluno especial não foi informado");
+    if ( status==null ) throw  new IllegalArgumentException("status não foi informado");
+    this.pessoa_id = pessoa_id;
+    this.aluno_especial = aluno_especial;
+    this.status = status;
   }
 
   public Long getId() {

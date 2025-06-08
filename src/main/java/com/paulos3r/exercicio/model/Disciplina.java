@@ -18,6 +18,19 @@ public class Disciplina {
   @Enumerated(EnumType.STRING)
   private Status status;
 
+  public Disciplina() {
+  }
+
+  public Disciplina(Long id, String nome, String ementa, Double carga_horaria, Integer porcentagem_teoria, Integer porcentagem_pratica, Status status) {
+    this.id = id;
+    this.nome = nome;
+    this.ementa = ementa;
+    this.carga_horaria = carga_horaria;
+    this.porcentagem_teoria = porcentagem_teoria;
+    this.porcentagem_pratica = porcentagem_pratica;
+    this.status = status;
+  }
+
   public Disciplina(DisciplinaDTO disciplinaDTO){
     this.setNome(disciplinaDTO.nome());
     this.setEmenta(disciplinaDTO.ementa());

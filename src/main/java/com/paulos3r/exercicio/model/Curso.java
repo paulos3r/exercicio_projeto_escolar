@@ -19,6 +19,24 @@ public class Curso {
   @Enumerated(EnumType.STRING)
   private Status status;
 
+  public Curso() {
+  }
+
+  public Curso(String nome, Categoria categoria_id, LocalDateTime data_criacao, Status status) {
+    this.nome = nome;
+    this.categoria_id = categoria_id;
+    this.data_criacao = data_criacao;
+    this.status = status;
+  }
+
+  public Curso(Long id, String nome, Categoria categoria_id, LocalDateTime data_criacao, Status status) {
+    this.id = id;
+    this.nome = nome;
+    this.categoria_id = categoria_id;
+    this.data_criacao = data_criacao;
+    this.status = status;
+  }
+
   public Curso(CursoDTO cursoDTO){
     this.setNome(cursoDTO.nome());
     this.setCategoria_id(cursoDTO.categoria_id());

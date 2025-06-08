@@ -25,6 +25,20 @@ public class Turma {
   @Enumerated(EnumType.STRING)
   private Status status;
 
+  public Turma() {
+  }
+
+  public Turma(Long id, Curso curso_id, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status) {
+    this.id = id;
+    this.curso_id = curso_id;
+    this.nome = nome;
+    this.data_inicio = data_inicio;
+    this.data_final = data_final;
+    this.horario = horario;
+    this.sala = sala;
+    this.status = status;
+  }
+
   public Turma(TurmaDTO turmaDTO){
     setCurso_id(turmaDTO.curso_id());
     setNome(turmaDTO.nome());

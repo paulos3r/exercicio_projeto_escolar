@@ -21,6 +21,16 @@ public class Matricula {
   private Turma turma_id;
   private LocalDateTime data_matricula;
 
+  public Matricula() {
+  }
+
+  public Matricula(Long id, Aluno aluno_id, Turma turma_id, LocalDateTime data_matricula) {
+    this.id = id;
+    this.aluno_id = aluno_id;
+    this.turma_id = turma_id;
+    this.data_matricula = data_matricula;
+  }
+
   public Matricula(MatriculaDTO matriculaDTO){
     setAluno_id(matriculaDTO.aluno_id());
     setTurma_id(matriculaDTO.turma_id());

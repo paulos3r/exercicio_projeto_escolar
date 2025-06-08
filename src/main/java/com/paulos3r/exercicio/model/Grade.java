@@ -22,6 +22,15 @@ public class Grade {
   @JoinColumn(name = "ministrante_id") // Nome da coluna da chave estrangeira para Ministrante
   private Ministrante ministrante_id;
 
+  public Grade() {
+  }
+
+  public Grade(Long id, Turma turma_id, Ministrante ministrante_id) {
+    this.id = id;
+    this.turma_id = turma_id;
+    this.ministrante_id = ministrante_id;
+  }
+
   public Grade(GradeDTO gradeDTO){
     setTurma_id(gradeDTO.turma_id());
     setMinistrante_id(gradeDTO.ministrante_id());

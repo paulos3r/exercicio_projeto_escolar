@@ -1,9 +1,6 @@
 package com.paulos3r.exercicio.service;
 
-import com.paulos3r.exercicio.dto.AlunoDTO;
-import com.paulos3r.exercicio.model.Aluno;
-import com.paulos3r.exercicio.model.Pessoa;
-import com.paulos3r.exercicio.model.Usuario;
+import com.paulos3r.exercicio.model.*;
 import com.paulos3r.exercicio.repository.AlunoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +26,25 @@ public class AlunoService {
   }
 
   @Transactional
-  public Aluno createAluno(AlunoDTO alunoDTO, Usuario usuario) throws Exception {
-    Pessoa pessoa = this.pessoaService.findPessoaById(alunoDTO.pessoa_id().getId());
-    return this.alunoRepository.save(new Aluno(alunoDTO));
+  public Aluno createAluno(Aluno aluno, Usuario usuario) throws Exception {
+    Pessoa pessoa = this.pessoaService.findPessoaById(aluno.getPessoa_id().getId());
+
+    var alunoFactory = new AlunoFactory().cadastrarAluno(pessoa, aluno.getAluno_especial() ,aluno.getStatus() );
+
+    return this.alunoRepository.save(alunoFactory);
   }
+
   @Transactional
-  public Aluno updateAlunoById(Long id, AlunoDTO alunoDTO) throws Exception {
-    Aluno aluno = this.alunoRepository.findById(id).orElseThrow(()-> new Exception("Aluno não encontrado"));
+  public Aluno updateAlunoById(Long id, Aluno aluno) throws Exception {
+    this.alunoRepository.findById(id).orElseThrow(()-> new Exception("Aluno não encontrado"));
 
-    this.pessoaService.findPessoaById(alunoDTO.pessoa_id().getId());
+    var pessoa = this.pessoaService.findPessoaById(aluno.getPessoa_id().getId());
 
-    aluno.atualizarAluno(alunoDTO);
+    var alunoFactory = new AlunoFactory().atualizarAluno(pessoa,aluno.getAluno_especial(), aluno.getStatus());
 
-    this.alunoRepository.save(aluno);
+    this.alunoRepository.save(alunoFactory);
 
-    return aluno;
+    return alunoFactory;
   }
   @Transactional
   public void deleteAlunoById(Long id) {

@@ -22,6 +22,15 @@ public class Ministrante {
   @JoinColumn(name = "disciplina_id") // Nome da coluna da chave estrangeira para Disciplina
   private Disciplina disciplina_id;
 
+  public Ministrante() {
+  }
+
+  public Ministrante(Long id, Docente docente_id, Disciplina disciplina_id) {
+    this.id = id;
+    this.docente_id = docente_id;
+    this.disciplina_id = disciplina_id;
+  }
+
   public Ministrante(MinistranteDTO ministranteDTO){
     setDocente_id(ministranteDTO.docente_id());
     setDisciplina_id(ministranteDTO.disciplina_id());

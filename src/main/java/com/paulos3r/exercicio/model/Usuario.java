@@ -38,7 +38,21 @@ public class Usuario implements UserDetails{
   private String token;
   private LocalDateTime expiracaoToken;
 
-  public Usuario(UsuarioDTO usuarioDTO,String senhaCriptografada, Perfil perfil){
+  public Usuario() {
+  }
+
+  public Usuario(Long id, String username, String password, String email, List<Perfil> roles, Boolean verificado, String token, LocalDateTime expiracaoToken) {
+    this.id = id;
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    this.roles = roles;
+    this.verificado = verificado;
+    this.token = token;
+    this.expiracaoToken = expiracaoToken;
+  }
+
+  public Usuario(UsuarioDTO usuarioDTO, String senhaCriptografada, Perfil perfil){
     this.setUsername(usuarioDTO.username());
     this.setPassword(senhaCriptografada);
     this.setEmail(usuarioDTO.email());

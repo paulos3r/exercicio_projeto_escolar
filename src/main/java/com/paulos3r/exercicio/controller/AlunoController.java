@@ -2,8 +2,10 @@ package com.paulos3r.exercicio.controller;
 
 import com.paulos3r.exercicio.dto.AlunoDTO;
 import com.paulos3r.exercicio.model.Aluno;
+import com.paulos3r.exercicio.model.Status;
 import com.paulos3r.exercicio.model.Usuario;
 import com.paulos3r.exercicio.service.AlunoService;
+import com.paulos3r.exercicio.service.PessoaService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,33 +20,49 @@ import java.util.List;
 public class AlunoController {
 
   @Autowired
-  private AlunoService alunoService;
+  private final AlunoService alunoService;
+
+  @Autowired
+
+  public AlunoController(AlunoService alunoService) {
+    this.alunoService = alunoService;
+  }
 
   @PostMapping
-  public ResponseEntity<Aluno> postAluno(@RequestBody AlunoDTO alunoDTO, @AuthenticationPrincipal Usuario usuario) throws Exception {
+  public ResponseEntity<AlunoDTO> postAluno(@RequestBody AlunoDTO alunoDTO, @AuthenticationPrincipal Usuario usuario){
     try{
-      Aluno aluno = this.alunoService.createAluno(alunoDTO, usuario);
-      return ResponseEntity.status(HttpStatus.CREATED).body(aluno);
+      var pessoa = new PessoaService().findPessoaById(alunoDTO.pessoa_id());
+
+      Status isAlunoEspecial = Status.valueOf( alunoDTO.aluno_especial().toUpperCase());
+      Status alunoStatus = Status.valueOf(alunoDTO.status().toUpperCase());
+
+      this.alunoService.createAluno(new Aluno(pessoa, isAlunoEspecial,alunoStatus), usuario);
+
+      return ResponseEntity.status(HttpStatus.CREATED).body(alunoDTO);
     }catch (Exception e ){
       return ResponseEntity.notFound().build();
     }
   }
 
   @GetMapping
-  public ResponseEntity<List<Aluno>> getAllAluno(){
+  public ResponseEntity<List<AlunoDTO>> getAllAluno(){
     try {
       List<Aluno> alunos = this.alunoService.findAllAluno();
-      return ResponseEntity.ok().body(alunos);
+      List<AlunoDTO> list = alunos.stream()
+              .map(aluno -> new AlunoDTO(aluno.getId(), aluno.getPessoa_id().getId() , aluno.getAluno_especial().toString(), aluno.getStatus().toString()))
+              .toList();
+      return ResponseEntity.ok().body(list);
     }catch (Exception e){
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Aluno> getAlunoById(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario){
+  public ResponseEntity<AlunoDTO> getAlunoById(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario){
     try{
       Aluno aluno = this.alunoService.findAlunoById(id);
-      return ResponseEntity.ok().body(aluno);
+
+      return ResponseEntity.ok().body(new AlunoDTO(aluno.getId(), aluno.getPessoa_id().getId(), aluno.getAluno_especial().toString(), aluno.getStatus().toString()));
     } catch (Exception e){
       return ResponseEntity.notFound().build();
     }
@@ -52,10 +70,15 @@ public class AlunoController {
 
   @PutMapping("/{id}")
   @Transactional
-  public ResponseEntity<Aluno> putAlunoById(@PathVariable Long id, @RequestBody AlunoDTO alunoDTO, @AuthenticationPrincipal Usuario usuario){
+  public ResponseEntity<AlunoDTO> putAlunoById(@PathVariable Long id, @RequestBody AlunoDTO alunoDTO, @AuthenticationPrincipal Usuario usuario){
     try{
-      Aluno aluno = this.alunoService.updateAlunoById(id, alunoDTO);
-      return ResponseEntity.ok(aluno);
+      var pessoa = new PessoaService().findPessoaById(alunoDTO.pessoa_id());
+
+      Status isAlunoEspecial = Status.valueOf( alunoDTO.aluno_especial().toUpperCase());
+      Status alunoStatus = Status.valueOf(alunoDTO.status().toUpperCase());
+
+      Aluno aluno = this.alunoService.updateAlunoById( id, new Aluno( pessoa, isAlunoEspecial, alunoStatus ) );
+      return ResponseEntity.ok(new AlunoDTO(aluno.getId(), aluno.getPessoa_id().getId(), aluno.getAluno_especial().toString(), aluno.getStatus().toString()));
     }catch (Exception e){
       return ResponseEntity.notFound().build();
     }

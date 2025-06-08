@@ -18,6 +18,15 @@ public class Docente {
   private Pessoa pessoa_id;
   private LocalDate data_contratacao;
 
+  public Docente() {
+  }
+
+  public Docente(Long id, Pessoa pessoa_id, LocalDate data_contratacao) {
+    this.id = id;
+    this.pessoa_id = pessoa_id;
+    this.data_contratacao = data_contratacao;
+  }
+
   public Docente(DocenteDTO docenteDTO){
     setPessoa_id(docenteDTO.pessoa_id());
     setData_contratacao(docenteDTO.data_contratacao());

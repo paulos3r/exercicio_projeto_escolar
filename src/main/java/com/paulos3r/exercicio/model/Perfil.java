@@ -14,6 +14,14 @@ public class Perfil implements GrantedAuthority {
   @Enumerated(EnumType.STRING)
   private PerfilNome nome;
 
+  public Perfil() {
+  }
+
+  public Perfil(Long id, PerfilNome nome) {
+    this.id = id;
+    this.nome = nome;
+  }
+
   @Override
   public String getAuthority() {
     return "ROLE_"+nome;
