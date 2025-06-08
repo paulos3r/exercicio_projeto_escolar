@@ -9,4 +9,4 @@ Criado só para praticar desenvolvimento web
 -   **Application Interface Adapters (Adaptadores de Interface):** Convertem dados dos Use Cases e Entities para formatos mais convenientes para frameworks e bancos de dados, e vice-versa. Inclui Controllers, Presenters e Gateways.
 -   **infrastructure Frameworks & Drivers (Dispositivos, Web, UI, Interfaces Externas, DB):** A camada mais externa, composta por frameworks, bancos de dados, dispositivos e UI. São os detalhes que podem ser facilmente trocados.
 
-![alt text](Clean Architecture.png)
+![alt text](https://github.com/paulos3r/exercicio_projeto_escolar/blob/main/Clean%20Architecture.png)
