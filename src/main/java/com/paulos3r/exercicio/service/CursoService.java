@@ -24,12 +24,14 @@ public class CursoService {
   public List<Curso> findAllCurso() throws Exception {
     return this.repository.findAll();
   }
+
   @Transactional
   public Curso saveCurso(CursoDTO cursoDTO){
     Curso curso = new Curso(cursoDTO);
     this.repository.save(curso);
     return curso;
   }
+
   @Transactional
   public Curso updateCurso(Long id, CursoDTO cursoDTO) throws Exception{
     Curso curso = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
