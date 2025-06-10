@@ -1,0 +1,22 @@
+package com.paulos3r.exercicio.domain.service;
+
+import com.paulos3r.exercicio.domain.model.Usuario;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class HierarquiaService {
+  private final RoleHierarchy roleHierarchy;
+
+  public HierarquiaService(RoleHierarchy roleHierarchy) {
+    this.roleHierarchy = roleHierarchy;
+  }
+
+  public boolean usuarioNaoTemPermissoes(Usuario logado, Usuario autor, String perfilDesejado) {
+    return logado.getAuthorities().stream()
+            .flatMap(autoridade -> roleHierarchy.getReachableGrantedAuthorities(List.of(autoridade)).stream())
+            .noneMatch(perfil -> perfil.getAuthority().equals(perfilDesejado) || logado.getId().equals(autor.getId()));
+  }
+}

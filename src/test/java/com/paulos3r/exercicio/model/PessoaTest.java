@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.model;
 
+import com.paulos3r.exercicio.domain.model.Pessoa;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

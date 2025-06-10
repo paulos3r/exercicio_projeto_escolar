@@ -1,8 +1,8 @@
 package com.paulos3r.exercicio.component;
 
-import com.paulos3r.exercicio.model.Usuario;
-import com.paulos3r.exercicio.repository.UsuarioRepository;
-import com.paulos3r.exercicio.service.TokenService;
+import com.paulos3r.exercicio.domain.model.Usuario;
+import com.paulos3r.exercicio.infrastructure.repository.UsuarioRepository;
+import com.paulos3r.exercicio.domain.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

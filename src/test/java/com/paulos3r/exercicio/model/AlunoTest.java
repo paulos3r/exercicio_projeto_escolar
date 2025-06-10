@@ -1,5 +1,9 @@
 package com.paulos3r.exercicio.model;
 
+import com.paulos3r.exercicio.domain.model.Aluno;
+import com.paulos3r.exercicio.domain.model.Pessoa;
+import com.paulos3r.exercicio.domain.model.Status;
+import com.paulos3r.exercicio.domain.model.gateways.AlunoFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
