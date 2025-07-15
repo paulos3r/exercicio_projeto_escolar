@@ -43,7 +43,7 @@ public class TurmaController {
     try {
 
       var curso = cursoService.findCursoById(turmaDTO.curso_id());
-      var turma = turmaService.saveTurma()
+      var turma = turmaService.saveTurma();
 
       var save = this.turmaService.saveTurma();
       return ResponseEntity.ok(save);

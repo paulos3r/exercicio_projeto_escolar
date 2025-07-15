@@ -25,7 +25,11 @@ public class Docente {
     this.pessoa_id = pessoa_id;
     this.data_contratacao = data_contratacao;
   }
-
+  public Docente(Pessoa pessoa_id, LocalDate data_contratacao) {
+    this.id = id;
+    this.pessoa_id = pessoa_id;
+    this.data_contratacao = data_contratacao;
+  }
   public Long getId() {
     return id;
   }

@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.application.controller;
 
+import com.paulos3r.exercicio.domain.service.PessoaService;
 import com.paulos3r.exercicio.infrastructure.dto.DocenteDTO;
 import com.paulos3r.exercicio.domain.model.Docente;
 import com.paulos3r.exercicio.domain.service.DocenteService;
@@ -15,6 +16,7 @@ public class DocenteController {
 
   @Autowired
   private DocenteService docenteService;
+  private PessoaService pessoaService;
 
   @GetMapping
   public ResponseEntity<List<Docente>> getAllDocente(){
@@ -39,7 +41,10 @@ public class DocenteController {
   @PostMapping
   public ResponseEntity<Docente> postDocente(@RequestBody DocenteDTO docenteDTO ){
     try{
-      var docente = this.docenteService.saveDocente(docenteDTO);
+
+      var pessoa = pessoaService.findPessoaById(docenteDTO.pessoa_id());
+      var docente = this.docenteService.saveDocente(new Docente(pessoa, docenteDTO.data_contratacao()));
+
       return ResponseEntity.ok(docente);
     }catch (Exception e){
       return ResponseEntity.notFound().build();

@@ -29,6 +29,10 @@ public class Ministrante {
     this.docente_id = docente_id;
     this.disciplina_id = disciplina_id;
   }
+  public Ministrante(Docente docente_id, Disciplina disciplina_id) {
+    this.docente_id = docente_id;
+    this.disciplina_id = disciplina_id;
+  }
 
   public Long getId() {
     return id;

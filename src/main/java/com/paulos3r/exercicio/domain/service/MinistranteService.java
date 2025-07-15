@@ -1,5 +1,7 @@
 package com.paulos3r.exercicio.domain.service;
 
+import com.paulos3r.exercicio.domain.model.gateways.DisciplinaFactory;
+import com.paulos3r.exercicio.domain.model.gateways.MinistranteFactory;
 import com.paulos3r.exercicio.infrastructure.dto.MinistranteDTO;
 import com.paulos3r.exercicio.domain.model.Ministrante;
 import com.paulos3r.exercicio.infrastructure.repository.MinistranteRepository;
@@ -29,17 +31,25 @@ public class MinistranteService {
     return this.repository.findAll();
   }
   @Transactional
-  public Ministrante saveMinistrante(MinistranteDTO ministranteDTO){
-    var ministrante = new Ministrante(ministranteDTO);
-    this.repository.save(ministrante);
-    return ministrante;
+  public Ministrante saveMinistrante(Ministrante ministrante) throws Exception {
+
+    var docente = docenteService.findDocenteById(ministrante.getDocente_id().getId());
+    var disciplina = disciplinaService.findDisciplinaById(ministrante.getDisciplina_id().getId());
+
+    var ministranteFactory = new MinistranteFactory().createMinistrante(docente,disciplina);
+
+    return this.repository.save(ministranteFactory);
   }
+
   @Transactional
   public Ministrante updateMinistrante(Long id, MinistranteDTO ministranteDTO) throws Exception{
     Ministrante ministrante = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
 
-    ministrante.updateMinistrante(ministranteDTO);
+    var docente = docenteService.findDocenteById(ministranteDTO.docente_id());
+    var disciplina = disciplinaService.findDisciplinaById(ministranteDTO.disciplina_id());
 
-    return this.repository.save(ministrante);
+    var ministranteFactory = new MinistranteFactory().updateMinistrante(id, docente, disciplina);
+
+    return this.repository.save(ministranteFactory);
   }
 }

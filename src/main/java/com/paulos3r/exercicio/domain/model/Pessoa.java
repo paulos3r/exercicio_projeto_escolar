@@ -51,7 +51,17 @@ public class Pessoa {
     this.data_nascimento = data_nascimento;
     this.endereco = endereco;
     this.telefone = telefone;
-    this.usuario = usuario;
+  }
+
+  public Pessoa(String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone) {
+    if (cpf == null || !cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
+      throw new IllegalArgumentException("Cpf no padrão incorreto!");
+    }
+    this.nome = nome;
+    this.cpf = cpf;
+    this.data_nascimento = data_nascimento;
+    this.endereco = endereco;
+    this.telefone = telefone;
   }
 
   public Pessoa(PessoaDTO pessoaDTO, Usuario usuario){
