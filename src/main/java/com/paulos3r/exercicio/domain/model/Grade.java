@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.domain.model;
 
-import com.paulos3r.exercicio.infrastructure.dto.GradeDTO;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -29,14 +28,9 @@ public class Grade {
     this.ministrante_id = ministrante_id;
   }
 
-  public Grade(GradeDTO gradeDTO){
-    setTurma_id(gradeDTO.turma_id());
-    setMinistrante_id(gradeDTO.ministrante_id());
-  }
-
-  public void updateGade(GradeDTO gradeDTO){
-    if (gradeDTO.turma_id()!=null) this.setTurma_id(gradeDTO.turma_id());
-    if (gradeDTO.ministrante_id()!=null) this.setMinistrante_id(gradeDTO.ministrante_id());
+  public Grade(Turma turma_id, Ministrante ministrante_id) {
+    this.turma_id = turma_id;
+    this.ministrante_id = ministrante_id;
   }
 
   public Long getId() {
@@ -51,9 +45,6 @@ public class Grade {
     return turma_id;
   }
 
-  public void setTurma_id(Turma turma_id) {
-    this.turma_id = turma_id;
-  }
 
   public Ministrante getMinistrante_id() {
     return ministrante_id;

@@ -93,7 +93,6 @@ public class Pessoa {
   }
 
   public void setCpf(String cpf) {
-    if (cpf == null || !cpf.matches("\\d{3}.\\d{3}.\\d{3}-\\d{2}")) throw new IllegalArgumentException("Cpf com padrao invalido");
     this.cpf = cpf;
   }
 

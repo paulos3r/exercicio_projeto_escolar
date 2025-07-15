@@ -6,8 +6,8 @@ import com.paulos3r.exercicio.domain.model.Turma;
 
 public class GradeFactory {
 
-    public Grade createGrade(Long id, Turma turma_id, Ministrante ministrante_id){
-        return new Grade(id, turma_id, ministrante_id);
+    public Grade createGrade(Turma turma_id, Ministrante ministrante_id){
+        return new Grade(turma_id, ministrante_id);
     }
 
     public Grade updateGade(Long id, Turma turma_id, Ministrante ministrante_id){

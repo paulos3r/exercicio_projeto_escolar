@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.application.controller;
 
+import com.paulos3r.exercicio.domain.service.CursoService;
 import com.paulos3r.exercicio.infrastructure.dto.TurmaDTO;
 import com.paulos3r.exercicio.domain.model.Turma;
 import com.paulos3r.exercicio.domain.service.TurmaService;
@@ -15,6 +16,8 @@ public class TurmaController {
 
   @Autowired
   private TurmaService turmaService;
+
+  private CursoService cursoService;
 
   @GetMapping
   public ResponseEntity<List<Turma>> getAllTurma(){
@@ -38,8 +41,12 @@ public class TurmaController {
   @PostMapping
   public ResponseEntity<Turma> postTurma(@RequestBody TurmaDTO turmaDTO){
     try {
-      var turma = this.turmaService.saveTurma(turmaDTO);
-      return ResponseEntity.ok(turma);
+
+      var curso = cursoService.findCursoById(turmaDTO.curso_id());
+      var turma = turmaService.saveTurma()
+
+      var save = this.turmaService.saveTurma();
+      return ResponseEntity.ok(save);
     }catch (Exception e){
       return ResponseEntity.notFound().build();
     }

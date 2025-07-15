@@ -30,16 +30,6 @@ public class Ministrante {
     this.disciplina_id = disciplina_id;
   }
 
-  public Ministrante(MinistranteDTO ministranteDTO){
-    setDocente_id(ministranteDTO.docente_id());
-    setDisciplina_id(ministranteDTO.disciplina_id());
-  }
-
-  public void updateMinistrante(MinistranteDTO ministranteDTO){
-    if (ministranteDTO.docente_id()!=null) this.setDocente_id(ministranteDTO.docente_id());
-    if (ministranteDTO.disciplina_id()!=null) this.setDisciplina_id(ministranteDTO.disciplina_id());
-  }
-
   public Long getId() {
     return id;
   }

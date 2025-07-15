@@ -26,15 +26,6 @@ public class Docente {
     this.data_contratacao = data_contratacao;
   }
 
-  public Docente(DocenteDTO docenteDTO){
-    setPessoa_id(docenteDTO.pessoa_id());
-    setData_contratacao(docenteDTO.data_contratacao());
-  }
-
-  public void updateDocente(DocenteDTO docenteDTO){
-    if (docenteDTO.data_contratacao()!=null) this.setData_contratacao(docenteDTO.data_contratacao());
-  }
-
   public Long getId() {
     return id;
   }

@@ -1,6 +1,9 @@
 package com.paulos3r.exercicio.domain.service;
 
 import com.paulos3r.exercicio.domain.model.Grade;
+import com.paulos3r.exercicio.domain.model.Ministrante;
+import com.paulos3r.exercicio.domain.model.Turma;
+import com.paulos3r.exercicio.domain.model.gateways.GradeFactory;
 import com.paulos3r.exercicio.infrastructure.dto.GradeDTO;
 import com.paulos3r.exercicio.infrastructure.repository.GradeRepository;
 import jakarta.transaction.Transactional;
@@ -28,22 +31,24 @@ public class GradeService {
   public List<Grade> findAllGrade() throws Exception {
     return this.repository.findAll();
   }
-  @Transactional
-  public Grade saveAluno(GradeDTO gradeDTO) throws Exception {
-    this.turmaService.findTurmaById(gradeDTO.turma_id().getId());
-    this.ministranteService.findMinistranteById(gradeDTO.ministrante_id().getId());
-    var grade = new Grade(gradeDTO);
 
-    return this.repository.save(grade);
+  @Transactional
+  public Grade saveGrade(Grade grade) throws Exception {
+    var turma = this.turmaService.findTurmaById(grade.getTurma_id().getId());
+    var ministrante = this.ministranteService.findMinistranteById(grade.getMinistrante_id().getId());
+
+    return this.repository.save(new Grade(turma,ministrante));
   }
   @Transactional
-  public Grade updateGrade(Long id, GradeDTO gradeDTO) throws Exception {
-    this.turmaService.findTurmaById(gradeDTO.turma_id().getId());
-    this.ministranteService.findMinistranteById(gradeDTO.ministrante_id().getId());
+  public Grade updateGrade(Long id, Grade grade ) throws Exception {
+    Turma turma = this.turmaService.findTurmaById(grade.getTurma_id().getId());
+    Ministrante ministrante = this.ministranteService.findMinistranteById(grade.getMinistrante_id().getId());
 
-    Grade grade = this.repository.findById(id).orElseThrow(()-> new Exception("Grade não encontrada"));
+    Grade gradeRepository = this.repository.findById(id).orElseThrow(()-> new Exception("Grade não encontrada"));
 
-    grade.updateGade(gradeDTO);
+    GradeFactory gradeFactory = new GradeFactory();
+
+    gradeFactory.updateGade(gradeRepository.getId(), turma,ministrante);
 
     return this.repository.save(grade);
   }
