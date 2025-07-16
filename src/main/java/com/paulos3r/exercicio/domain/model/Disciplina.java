@@ -30,6 +30,14 @@ public class Disciplina {
     this.porcentagem_pratica = porcentagem_pratica;
     this.status = status;
   }
+  public Disciplina(String nome, String ementa, Double carga_horaria, Integer porcentagem_teoria, Integer porcentagem_pratica, Status status) {
+    this.nome = nome;
+    this.ementa = ementa;
+    this.carga_horaria = carga_horaria;
+    this.porcentagem_teoria = porcentagem_teoria;
+    this.porcentagem_pratica = porcentagem_pratica;
+    this.status = status;
+  }
 
   public void deleteDisciplina(){
     setStatus(Status.INATIVO);

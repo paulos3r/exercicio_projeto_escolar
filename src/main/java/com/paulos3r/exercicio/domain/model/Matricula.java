@@ -23,21 +23,15 @@ public class Matricula {
   public Matricula() {
   }
 
-  public Matricula(Long id, Aluno aluno_id, Turma turma_id, LocalDateTime data_matricula) {
+  public Matricula(Long id, Aluno aluno_id, Turma turma_id) {
     this.id = id;
     this.aluno_id = aluno_id;
     this.turma_id = turma_id;
+  }
+  public Matricula(Aluno aluno_id, Turma turma_id, LocalDateTime data_matricula) {
+    this.aluno_id = aluno_id;
+    this.turma_id = turma_id;
     this.data_matricula = data_matricula;
-  }
-
-  public Matricula(MatriculaDTO matriculaDTO){
-    setAluno_id(matriculaDTO.aluno_id());
-    setTurma_id(matriculaDTO.turma_id());
-  }
-
-  public void updateMatricula(MatriculaDTO matriculaDTO){
-    if (matriculaDTO.aluno_id()!=null) this.setAluno_id(matriculaDTO.aluno_id());
-    if (matriculaDTO.turma_id()!=null) this.setTurma_id(matriculaDTO.turma_id());
   }
 
   public Long getId() {

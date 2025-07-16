@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.domain.service;
 
+import com.paulos3r.exercicio.domain.model.gateways.MatriculaFactory;
 import com.paulos3r.exercicio.infrastructure.dto.MatriculaDTO;
 import com.paulos3r.exercicio.domain.model.Matricula;
 import com.paulos3r.exercicio.infrastructure.repository.MatriculaRepository;
@@ -29,21 +30,23 @@ public class MatriculaService {
     return this.repository.findById(id).orElseThrow(()->new Exception("Matricula não encontrada"));
   }
   @Transactional
-  public Matricula saveMatricula(MatriculaDTO matriculaDTO) throws Exception {
-    this.alunoService.findAlunoById(matriculaDTO.aluno_id().getId());
-    this.turmaService.findTurmaById(matriculaDTO.turma_id().getId());
+  public Matricula saveMatricula(Matricula matricula) throws Exception {
+    var aluno = this.alunoService.findAlunoById(matricula.getAluno_id().getId());
+    var turma = this.turmaService.findTurmaById(matricula.getTurma_id().getId());
 
-    var matricula = new Matricula(matriculaDTO);
-    return this.repository.save(matricula);
+    var matriculaFactory = new MatriculaFactory().createMatricula(aluno,turma,matricula.getData_matricula());
+    return this.repository.save(matriculaFactory);
   }
   @Transactional
-  public Matricula updateMatricula(Long id, MatriculaDTO matriculaDTO) throws Exception {
-    this.alunoService.findAlunoById(matriculaDTO.aluno_id().getId());
-    this.turmaService.findTurmaById(matriculaDTO.turma_id().getId());
+  public Matricula updateMatricula(Long id, Matricula matricula) throws Exception {
+    this.repository.findById(id).orElseThrow(()->new Exception("Matricula não encontrada"));
 
-    var matricula = this.repository.findById(id).orElseThrow(()->new Exception("Matricula não encontrada"));
-    matricula.updateMatricula(matriculaDTO);
+    var aluno = this.alunoService.findAlunoById(matricula.getAluno_id().getId());
+    var turma = this.turmaService.findTurmaById(matricula.getTurma_id().getId());
 
-    return this.repository.save(matricula);
+
+    var matriculaFactory = new MatriculaFactory().updateMatricula(id,aluno,turma);
+
+    return this.repository.save(matriculaFactory);
   }
 }

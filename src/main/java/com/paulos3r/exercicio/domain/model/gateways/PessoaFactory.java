@@ -7,8 +7,8 @@ import java.time.LocalDate;
 
 public class PessoaFactory {
 
-    public Pessoa createPessoa(String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone, Usuario usuario){
-        return new Pessoa(nome, cpf, data_nascimento, endereco, telefone, usuario);
+    public Pessoa createPessoa(String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone){
+        return new Pessoa(nome, cpf, data_nascimento, endereco, telefone);
     }
 
     public Pessoa updatePessoa(Long id, String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone, Usuario usuario){

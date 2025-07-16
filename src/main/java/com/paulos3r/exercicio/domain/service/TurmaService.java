@@ -42,11 +42,12 @@ public class TurmaService {
   }
   @Transactional
   public Turma updateTurma(Long id, Turma turma) throws Exception{
-    Turma turma = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+    this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+    var curso = cursoService.findCursoById(turma.getCurso_id().getId());
 
-    turma.updateTurma(turmaDTO);
+    var turmaFactory = new TurmaFactory().updateTurma(id, curso, turma.getNome(), turma.getData_inicio(), turma.getData_final(), turma.getHorario(), turma.getSala(), Status.ATIVO);
 
-    return this.repository.save(turma);
+    return this.repository.save(turmaFactory);
   }
   @Transactional
   public void deleteTurma(Long id) throws Exception{

@@ -1,5 +1,7 @@
 package com.paulos3r.exercicio.application.controller;
 
+import com.paulos3r.exercicio.domain.model.Categoria;
+import com.paulos3r.exercicio.domain.model.Status;
 import com.paulos3r.exercicio.infrastructure.dto.CursoDTO;
 import com.paulos3r.exercicio.domain.model.Curso;
 import com.paulos3r.exercicio.domain.service.CursoService;
@@ -38,14 +40,16 @@ public class CursoController {
 
   @PostMapping
   public ResponseEntity<Curso> createCurso(@RequestBody CursoDTO cursoDTO){
-    Curso curso = this.cursoService.saveCurso(cursoDTO.nome(), cursoDTO.categoria_id(), cursoDTO.data_criacao(),cursoDTO.status());
+
+    var curso = this.cursoService.saveCurso(new Curso( cursoDTO.nome(), Categoria.OFICINA , cursoDTO.data_criacao(), Status.ATIVO ));
+
     return ResponseEntity.status(HttpStatus.CREATED).body(curso);
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<Curso> updateCurso(@PathVariable Long id, @RequestBody CursoDTO cursoDTO){
     try {
-      Curso curso = this.cursoService.updateCurso(id, cursoDTO);
+      Curso curso = this.cursoService.updateCurso(id, new Curso( cursoDTO.nome(), Categoria.OFICINA , cursoDTO.data_criacao(), Status.ATIVO ));
       return ResponseEntity.ok(curso);
     }catch (Exception e){
       return ResponseEntity.notFound().build();

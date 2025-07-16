@@ -32,10 +32,10 @@ public class CursoService {
   }
 
   @Transactional
-  public Curso updateCurso(Long id, CursoDTO cursoDTO) throws Exception{
-    Curso curso = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+  public Curso updateCurso(Long id, Curso curso) throws Exception{
+    this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
 
-    curso.updateCurso(cursoDTO);
+    var cursoFactory = new CursoFactory().updateCurso(curso.getNome(), curso.getCategoria_id(), curso.getData_criacao(), curso.getStatus());
 
     return this.repository.save(curso);
   }

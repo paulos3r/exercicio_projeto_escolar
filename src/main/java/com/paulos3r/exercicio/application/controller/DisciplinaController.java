@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.application.controller;
 
+import com.paulos3r.exercicio.domain.model.Status;
 import com.paulos3r.exercicio.infrastructure.dto.DisciplinaDTO;
 import com.paulos3r.exercicio.domain.model.Disciplina;
 import com.paulos3r.exercicio.domain.service.DisciplinaService;
@@ -38,7 +39,8 @@ public class DisciplinaController {
   @PostMapping
   public ResponseEntity<Disciplina> getAllDisciplina(@RequestBody DisciplinaDTO disciplinaDTO){
     try {
-      Disciplina disciplina = this.disciplinaService.saveAluno(disciplinaDTO);
+      /// disciplina.getNome(), disciplina.getEmenta(), disciplina.getCarga_horaria(), disciplina.getPorcentagem_teoria(), disciplina.getPorcentagem_pratica()
+      var disciplina = this.disciplinaService.saveAluno( new Disciplina(disciplinaDTO.nome(),disciplinaDTO.ementa(),disciplinaDTO.carga_horaria(),disciplinaDTO.porcentagem_teoria(),disciplinaDTO.porcentagem_pratica(), Status.ATIVO));
       return ResponseEntity.ok(disciplina);
     } catch (Exception e) {
       return ResponseEntity.notFound().build();
@@ -48,7 +50,7 @@ public class DisciplinaController {
   @PutMapping("/{id}")
   public ResponseEntity<Disciplina> putDisciplina(@PathVariable Long id, @RequestBody DisciplinaDTO disciplinaDTO){
     try{
-      var disciplina = this.disciplinaService.updateDisciplina(id, disciplinaDTO);
+      var disciplina = this.disciplinaService.updateDisciplina(id, new Disciplina(disciplinaDTO.nome(),disciplinaDTO.ementa(),disciplinaDTO.carga_horaria(),disciplinaDTO.porcentagem_teoria(),disciplinaDTO.porcentagem_pratica(), Status.ATIVO));
       return ResponseEntity.ok(disciplina);
     } catch (Exception e) {
       return ResponseEntity.notFound().build();

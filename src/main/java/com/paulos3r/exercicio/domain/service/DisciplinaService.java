@@ -1,5 +1,7 @@
 package com.paulos3r.exercicio.domain.service;
 
+import com.paulos3r.exercicio.domain.model.Status;
+import com.paulos3r.exercicio.domain.model.gateways.DisciplinaFactory;
 import com.paulos3r.exercicio.infrastructure.dto.DisciplinaDTO;
 import com.paulos3r.exercicio.domain.model.Disciplina;
 import com.paulos3r.exercicio.infrastructure.repository.DisciplinaRepository;
@@ -24,19 +26,19 @@ public class DisciplinaService {
   }
 
   @Transactional
-  public Disciplina saveAluno(DisciplinaDTO disciplinaDTO) throws Exception {
-    var disciplina = new Disciplina(disciplinaDTO);
-    return this.repository.save(disciplina);
+  public Disciplina saveAluno(Disciplina disciplina) throws Exception {
+
+    var disciplinaFactory = new DisciplinaFactory().createDisciplina(disciplina.getNome(), disciplina.getEmenta(), disciplina.getCarga_horaria(), disciplina.getPorcentagem_teoria(), disciplina.getPorcentagem_pratica(), disciplina.getStatus());
+    return this.repository.save(disciplinaFactory);
   }
 
   @Transactional
-  public Disciplina updateDisciplina(Long id, DisciplinaDTO disciplinaDTO) throws Exception{
+  public Disciplina updateDisciplina(Long id, Disciplina disciplina) throws Exception{
+    this.repository.findById(id).orElseThrow(()-> new Exception("Não foi possivel encontrar o cadastro"));
 
-    Disciplina disciplina = this.repository.findById(id).orElseThrow(()-> new Exception("Não foi possivel encontrar o cadastro"));
+    var disciplinaFactory = new DisciplinaFactory().updateDisciplina(id,disciplina.getNome(), disciplina.getEmenta(), disciplina.getCarga_horaria(), disciplina.getPorcentagem_teoria(), disciplina.getPorcentagem_pratica(), disciplina.getStatus());
 
-    disciplina.updateDisciplina(disciplinaDTO);
-
-    return this.repository.save(disciplina);
+    return this.repository.save(disciplinaFactory);
   }
 
   @Transactional
