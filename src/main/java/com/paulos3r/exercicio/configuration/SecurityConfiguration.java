@@ -32,7 +32,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(
                     req -> {
                       // acesso publico
-                      req.requestMatchers("/autenticar/login", "/usuario/registrar", "/usuario/verificar-conta").permitAll();
+                      req.requestMatchers("/autenticar/login", "/usuario/registrar", "/usuario/verificar-conta", "/**").permitAll();
                       req.requestMatchers(HttpMethod.GET, "/cursos").permitAll();
                       // req.requestMatchers(HttpMethod.GET, "/cursos/**").permitAll();  GENERICO
                       req.requestMatchers(HttpMethod.GET, "/alunos").hasRole("DOCENTE");
