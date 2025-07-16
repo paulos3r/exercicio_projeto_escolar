@@ -38,6 +38,27 @@ public class Aluno {
     this.status = status;
   }
 
+  public void atualizarStatus(Status status){
+    if (status==null){
+      throw new IllegalArgumentException("Status não pode ser nulo.");
+    }
+    this.status = status;
+  }
+
+  public void tornarAlunoEspecial(Status status){
+    if (status==null){
+      throw new IllegalArgumentException("Status não pode ser nulo.");
+    }
+    this.status = status;
+  }
+
+  public void associarPessoa(Pessoa pessoa){
+    if (pessoa == null || pessoa.getId()==null){
+      throw new IllegalArgumentException("Pessoa para reassociar deve ser válida e possuir um ID.");
+    }
+    this.pessoa_id=pessoa;
+  }
+
   public Long getId() {
     return id;
   }
@@ -50,16 +71,8 @@ public class Aluno {
     return pessoa_id;
   }
 
-  public void setPessoa_id(Pessoa pessoa_id) {
-    this.pessoa_id = pessoa_id;
-  }
-
   public Status getAluno_especial() {
     return aluno_especial;
-  }
-
-  public void setAluno_especial(Status aluno_especial) {
-    this.aluno_especial = aluno_especial;
   }
 
   public Status getStatus() {
