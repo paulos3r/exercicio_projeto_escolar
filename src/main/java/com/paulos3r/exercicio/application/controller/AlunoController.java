@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/aluno")
@@ -31,29 +32,50 @@ public class AlunoController {
   @PostMapping
   public ResponseEntity<AlunoDTO> postAluno(@RequestBody AlunoDTO alunoDTO, @AuthenticationPrincipal Usuario usuario){
     try{
-      var pessoa = new PessoaService().findPessoaById(alunoDTO.pessoa_id());
 
       Status isAlunoEspecial = Status.valueOf( alunoDTO.aluno_especial().toUpperCase());
       Status alunoStatus = Status.valueOf(alunoDTO.status().toUpperCase());
 
-      this.alunoService.createAluno(new Aluno(pessoa, isAlunoEspecial,alunoStatus), usuario);
+      Aluno aluno = alunoService.createAluno(
+              alunoDTO.pessoa_id(),
+              isAlunoEspecial,
+              alunoStatus
+      );
 
-      return ResponseEntity.status(HttpStatus.CREATED).body(alunoDTO);
-    }catch (Exception e ){
-      return ResponseEntity.notFound().build();
+      return ResponseEntity.status(HttpStatus.CREATED).body(
+              new AlunoDTO(
+                      aluno.getId(),
+                      aluno.getPessoa_id().getId(),
+                      aluno.getAluno_especial().name(),
+                      aluno.getStatus().name()
+              )
+
+      );
+
+    } catch (IllegalArgumentException | NoSuchElementException e) {
+      return ResponseEntity.badRequest().body(new AlunoDTO(null, null, "Erro na criação: " + e.getMessage(), null));
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AlunoDTO(null, null, "Erro interno do servidor: " + e.getMessage(), null));
     }
   }
 
   @GetMapping
   public ResponseEntity<List<AlunoDTO>> getAllAluno(){
     try {
+
       List<Aluno> alunos = this.alunoService.findAllAluno();
-      List<AlunoDTO> list = alunos.stream()
-              .map(aluno -> new AlunoDTO(aluno.getId(), aluno.getPessoa_id().getId() , aluno.getAluno_especial().toString(), aluno.getStatus().toString()))
+
+      List<AlunoDTO> listaDTO = alunos.stream()
+              .map(aluno -> new AlunoDTO(
+                      aluno.getId(),
+                      aluno.getPessoa_id().getId(),
+                      aluno.getAluno_especial().name(),
+                      aluno.getStatus().name()
+              ))
               .toList();
-      return ResponseEntity.ok().body(list);
+      return ResponseEntity.ok().body(listaDTO);
     }catch (Exception e){
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
 
@@ -62,25 +84,89 @@ public class AlunoController {
     try{
       Aluno aluno = this.alunoService.findAlunoById(id);
 
-      return ResponseEntity.ok().body(new AlunoDTO(aluno.getId(), aluno.getPessoa_id().getId(), aluno.getAluno_especial().toString(), aluno.getStatus().toString()));
-    } catch (Exception e){
+      return ResponseEntity.ok().body(new AlunoDTO(
+              aluno.getId(),
+              aluno.getPessoa_id().getId(),
+              aluno.getAluno_especial().name(),
+              aluno.getStatus().name()
+      ));
+    } catch (IllegalArgumentException e){
       return ResponseEntity.notFound().build();
+    } catch (Exception e){
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
 
   @PutMapping("/{id}")
   @Transactional
-  public ResponseEntity<AlunoDTO> putAlunoById(@PathVariable Long id, @RequestBody AlunoDTO alunoDTO, @AuthenticationPrincipal Usuario usuario){
+  public ResponseEntity<AlunoDTO> putAlunoById(
+          @PathVariable Long id,
+          @RequestBody AlunoDTO alunoDTO,
+          @AuthenticationPrincipal Usuario usuario
+  ){
     try{
-      var pessoa = new PessoaService().findPessoaById(alunoDTO.pessoa_id());
 
-      Status isAlunoEspecial = Status.valueOf( alunoDTO.aluno_especial().toUpperCase());
       Status alunoStatus = Status.valueOf(alunoDTO.status().toUpperCase());
 
-      Aluno aluno = this.alunoService.updateAlunoById( id, new Aluno( pessoa, isAlunoEspecial, alunoStatus ) );
-      return ResponseEntity.ok(new AlunoDTO(aluno.getId(), aluno.getPessoa_id().getId(), aluno.getAluno_especial().toString(), aluno.getStatus().toString()));
-    }catch (Exception e){
+      Aluno aluno = alunoService.updateAlunoById( id, alunoStatus );
+
+      return ResponseEntity.ok().body(
+              new AlunoDTO(
+                      aluno.getId(),
+                      aluno.getPessoa_id().getId(),
+                      aluno.getAluno_especial().name(),
+                      aluno.getStatus().toString()
+              )
+      );
+    } catch (IllegalArgumentException e) { // Se o ID não existir ou o Status for inválido
+    return ResponseEntity.badRequest().body(new AlunoDTO(null, null, "Erro ao atualizar status: " + e.getMessage(), null));
+  } catch (Exception e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+  }
+  }
+
+  @PatchMapping("/{id}/toggle-active") // PATCH é mais adequado para atualizações parciais
+  public ResponseEntity<AlunoDTO> alternarStatusAtivoAluno(@PathVariable Long id) {
+    try {
+      Aluno aluno = this.alunoService.updateStatusAtivoAluno(id,Status.ATIVO);
+
+      return ResponseEntity.ok().body(
+              new AlunoDTO(
+                      aluno.getId(),
+                      aluno.getPessoa_id().getId(),
+                      aluno.getAluno_especial().name(),
+                      aluno.getStatus().name()
+              )
+      );
+    } catch (IllegalArgumentException e) {
       return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  // --- Endpoint para Atualizar Status de Aluno Especial ---
+  @PutMapping("/{id}/aluno-especial") // Endpoint específico
+  public ResponseEntity<AlunoDTO> atualizarStatusAlunoEspecial(
+          @PathVariable Long id,
+          @RequestBody String novoAlunoEspecialString
+  ) {
+    try {
+      Status novoAlunoEspecial = Status.valueOf(novoAlunoEspecialString.toUpperCase());
+      Aluno alunoAtualizado = this.alunoService.updateStatusAlunoEspecial(id, novoAlunoEspecial);
+
+      return ResponseEntity.ok().body(
+              new AlunoDTO(
+                      alunoAtualizado.getId(),
+                      alunoAtualizado.getPessoa_id().getId(),
+                      alunoAtualizado.getAluno_especial().name(),
+                      alunoAtualizado.getStatus().name()
+              )
+      );
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(new AlunoDTO(null, null, "Erro ao atualizar status especial: " + e.getMessage(), null));
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
 
@@ -89,8 +175,10 @@ public class AlunoController {
     try{
       this.alunoService.deleteAlunoById(id);
       return  ResponseEntity.noContent().build();
-    } catch (Exception e){
-      return ResponseEntity.badRequest().build();
+    } catch (IllegalArgumentException e) { // Se o aluno não for encontrado para exclusão
+      return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
 }

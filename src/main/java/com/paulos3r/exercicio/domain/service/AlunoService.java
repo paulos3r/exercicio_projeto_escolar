@@ -2,7 +2,7 @@ package com.paulos3r.exercicio.domain.service;
 
 import com.paulos3r.exercicio.domain.model.Aluno;
 import com.paulos3r.exercicio.domain.model.Pessoa;
-import com.paulos3r.exercicio.domain.model.Usuario;
+import com.paulos3r.exercicio.domain.model.Status;
 import com.paulos3r.exercicio.domain.model.gateways.AlunoFactory;
 import com.paulos3r.exercicio.infrastructure.repository.AlunoRepository;
 import jakarta.transaction.Transactional;
@@ -15,40 +15,76 @@ import java.util.List;
 public class AlunoService {
 
   @Autowired
-  private PessoaService pessoaService;
+  private final PessoaService pessoaService;
 
   @Autowired
-  private AlunoRepository alunoRepository;
+  private final AlunoRepository alunoRepository;
 
-  public Aluno findAlunoById(Long id) throws Exception {
-    return this.alunoRepository.findById(id).orElseThrow(()->new Exception("Aluno não encontrado"));
+  @Autowired
+  private final AlunoFactory alunoFactory;
+
+  public AlunoService(PessoaService pessoaService, AlunoRepository alunoRepository, AlunoFactory alunoFactory) {
+    this.pessoaService = pessoaService;
+    this.alunoRepository = alunoRepository;
+    this.alunoFactory = alunoFactory;
   }
 
-  public List<Aluno> findAllAluno() throws Exception {
+
+  public Aluno findAlunoById(Long id) {
+    return this.alunoRepository.findById(id)
+            .orElseThrow(()->new IllegalArgumentException("Aluno não encontrado com ID: " + id));
+  }
+
+  public List<Aluno> findAllAluno() {
     return this.alunoRepository.findAll();
   }
 
   @Transactional
-  public Aluno createAluno(Aluno aluno, Usuario usuario) throws Exception {
-    Pessoa pessoa = this.pessoaService.findPessoaById(aluno.getPessoa_id().getId());
+  public Aluno createAluno(Long pessoaId, Status alunoEspecial, Status status) throws Exception {
 
-    var alunoFactory = new AlunoFactory().createAluno(pessoa, aluno.getAluno_especial() ,aluno.getStatus() );
+    Pessoa pessoa = this.pessoaService.findPessoaById(pessoaId);
 
-    return this.alunoRepository.save(alunoFactory);
+    Aluno aluno = alunoFactory.createAluno(pessoa, alunoEspecial ,status );
+
+    alunoRepository.save(aluno);
+
+    return aluno;
   }
 
   @Transactional
-  public Aluno updateAlunoById(Long id, Aluno aluno) throws Exception {
-    this.alunoRepository.findById(id).orElseThrow(()-> new Exception("Aluno não encontrado"));
+  public Aluno updateAlunoById(Long alunoId, Status status) throws Exception {
 
-    var pessoa = this.pessoaService.findPessoaById(aluno.getPessoa_id().getId());
+    Aluno alunoExistente =  alunoRepository.findById(alunoId)
+            .orElseThrow(()-> new IllegalArgumentException("Aluno não encontrado com o ID : " + alunoId));
 
-    var alunoFactory = new AlunoFactory().updateAluno(pessoa,aluno.getAluno_especial(), aluno.getStatus());
+    alunoExistente.atualizarStatus(status);
 
-    this.alunoRepository.save(alunoFactory);
+    alunoRepository.save(alunoExistente);
 
-    return alunoFactory;
+    return alunoExistente;
   }
+  @Transactional
+  public Aluno updateStatusAlunoEspecial(Long alunoId, Status novoAlunoEspecial) { // Atualização específica para status especial
+    Aluno alunoExistente = alunoRepository.findById(alunoId)
+            .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado com ID: " + alunoId));
+
+    alunoExistente.alterarStatusAlunoEspecial(novoAlunoEspecial); // Este método deve estar na entidade Aluno
+    alunoRepository.save(alunoExistente);
+
+    return alunoExistente;
+  }
+
+  @Transactional
+  public Aluno updateStatusAtivoAluno(Long alunoId, Status status) { // Atualização específica para alternar status ativo
+    Aluno alunoExistente = alunoRepository.findById(alunoId)
+            .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado com ID: " + alunoId));
+
+    alunoExistente.atualizarStatus(status);
+    alunoRepository.save(alunoExistente);
+
+    return alunoExistente;
+  }
+
   @Transactional
   public void deleteAlunoById(Long id) {
     alunoRepository.deleteById(id);
