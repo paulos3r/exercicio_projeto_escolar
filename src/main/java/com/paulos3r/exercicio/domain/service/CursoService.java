@@ -1,49 +1,65 @@
 package com.paulos3r.exercicio.domain.service;
 
-import com.paulos3r.exercicio.infrastructure.dto.CursoDTO;
+import com.paulos3r.exercicio.domain.model.Categoria;
 import com.paulos3r.exercicio.domain.model.Curso;
+import com.paulos3r.exercicio.domain.model.Status;
 import com.paulos3r.exercicio.domain.model.gateways.CursoFactory;
 import com.paulos3r.exercicio.infrastructure.repository.CursoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class CursoService {
 
   @Autowired
-  private CursoRepository repository;
+  private final CursoRepository cursoRepository;
+
+  @Autowired
+  private final CursoFactory cursoFactory;
+
+
+  public CursoService(CursoRepository cursoRepository, CursoFactory cursoFactory) {
+    this.cursoRepository = cursoRepository;
+    this.cursoFactory = cursoFactory;
+  }
 
   public Curso findCursoById(Long id) throws Exception {
-    return this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+    return cursoRepository.findById(id)
+            .orElseThrow(()-> new Exception("Curso não encontrado"));
   }
 
   public List<Curso> findAllCurso() throws Exception {
-    return this.repository.findAll();
+    return cursoRepository.findAll();
   }
 
   @Transactional
-  public Curso saveCurso(Curso curso){
-    var cursoFactory = new CursoFactory().createCurso(curso.getNome(), curso.getCategoria_id(), curso.getData_criacao(), curso.getStatus()) ;
-    this.repository.save(cursoFactory);
-    return curso;
+  public Curso saveCurso(String nome, Categoria categoria, LocalDateTime dataCriacao, Status status){
+    var cursoFactory = new CursoFactory().createCurso(nome, categoria, dataCriacao, status) ;
+    cursoRepository.save(cursoFactory);
+    return cursoFactory;
   }
 
   @Transactional
-  public Curso updateCurso(Long id, Curso curso) throws Exception{
-    this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+  public Curso updateCurso(Long cursoId, String nome, Status status) throws Exception{
+    Curso curso = cursoRepository.findById(cursoId)
+            .orElseThrow(()-> new Exception("Curso não encontrado"));
 
-    var cursoFactory = new CursoFactory().updateCurso(curso.getNome(), curso.getCategoria_id(), curso.getData_criacao(), curso.getStatus());
+    curso.atualizarStatus(status);
+    curso.atualizarNome(nome);
 
-    return this.repository.save(curso);
+    return cursoRepository.save(curso);
   }
   @Transactional
   public void deleteCurso(Long id) throws Exception{
-    Curso curso = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
-    curso.deleteCurso();
+    Curso curso = cursoRepository.findById(id)
+            .orElseThrow(()-> new Exception("Curso não encontrado"));
 
-    this.repository.save(curso);
+    curso.excluir();
+
+    this.cursoRepository.save(curso);
   }
 }

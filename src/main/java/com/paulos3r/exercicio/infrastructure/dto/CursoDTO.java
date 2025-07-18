@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
  * @param data_criacao
  * @param status
  */
-public record CursoDTO( String nome,
-                        Integer categoria_id,
+public record CursoDTO( Long id,
+                        String nome,
+                        String categoria_id,
                         LocalDateTime data_criacao,
                         String status) {
 }

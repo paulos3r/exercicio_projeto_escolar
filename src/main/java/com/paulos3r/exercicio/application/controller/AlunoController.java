@@ -55,7 +55,7 @@ public class AlunoController {
     } catch (IllegalArgumentException | NoSuchElementException e) {
       return ResponseEntity.badRequest().body(new AlunoDTO(null, null, "Erro na criação: " + e.getMessage(), null));
     } catch (Exception e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AlunoDTO(null, null, "Erro interno do servidor: " + e.getMessage(), null));
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
 

@@ -22,63 +22,110 @@ public class Curso {
   public Curso() {
   }
 
+  /**
+   * construtor utilizado na Factory para criação de novos cursos
+   * @param nome
+   * @param categoria_id
+   * @param data_criacao
+   * @param status
+   * @throws IllegalArgumentException Id não informado
+   * @throws IllegalArgumentException Nome não informado
+   * @throws IllegalAccessError Categoria não informado
+   * @throws IllegalArgumentException Status não informado
+   */
   public Curso(String nome, Categoria categoria_id, LocalDateTime data_criacao, Status status) {
+    if ( nome == null || nome.trim().isEmpty() ){
+      throw new IllegalArgumentException("O nome não pode ser null ou vazio");
+    }
+    if ( categoria_id == null || categoria_id.name().trim().isEmpty() ){
+      throw new IllegalArgumentException("A categoria não pode ser null ou vazio");
+    }
+    if ( status==null || status.name().isEmpty() ){
+      throw new IllegalArgumentException("O nome não pode ser null ou vazio");
+    }
     this.nome = nome;
     this.categoria_id = categoria_id;
     this.data_criacao = data_criacao;
     this.status = status;
   }
 
+  /**
+   *
+   * @param id
+   * @param nome
+   * @param categoria_id
+   * @param data_criacao
+   * @param status
+   * @throws IllegalArgumentException Id não informado
+   * @throws IllegalArgumentException Nome não informado
+   * @throws IllegalAccessError Categoria não informado
+   * @throws IllegalArgumentException Status não informado
+   */
   public Curso(Long id, String nome, Categoria categoria_id, LocalDateTime data_criacao, Status status) {
+    if ( id == null ){
+      throw new IllegalArgumentException("O id não foi informado");
+    }
+    if ( nome == null || nome.trim().isEmpty() ){
+      throw new IllegalArgumentException("O nome não pode ser null ou vazio");
+    }
+    if ( categoria_id == null || categoria_id.name().trim().isEmpty() ){
+      throw new IllegalArgumentException("A categoria não pode ser null ou vazio");
+    }
+    if ( status==null || status.name().isEmpty() ){
+      throw new IllegalArgumentException("O nome não pode ser null ou vazio");
+    }
     this.id = id;
     this.nome = nome;
     this.categoria_id = categoria_id;
     this.data_criacao = data_criacao;
     this.status = status;
-  }
-
-  public void deleteCurso(){
-    setStatus(Status.INATIVO);
   }
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   public String getNome() {
     return nome;
-  }
-
-  public void setNome(String nome) {
-    this.nome = nome;
   }
 
   public Categoria getCategoria_id() {
     return categoria_id;
   }
 
-  public void setCategoria_id(Categoria categoria_id) {
-    this.categoria_id = categoria_id;
-  }
-
   public LocalDateTime getData_criacao() {
     return data_criacao;
-  }
-
-  public void setData_criacao(LocalDateTime data_criacao) {
-    this.data_criacao = data_criacao;
   }
 
   public Status getStatus() {
     return status;
   }
 
-  public void setStatus(Status status) {
+  /**
+   * Atualiza o status geral do aluno.
+   * @param status O novo status.
+   * @throws IllegalArgumentException Se o status for nulo.
+   */
+  public void atualizarStatus(Status status) {
+    if (status == null) {
+      throw new IllegalArgumentException("O novo status não pode ser nulo.");
+    }
     this.status = status;
+  }
+
+  /**
+   *
+   * @param nome
+   */
+  public void atualizarNome(String nome) {
+    if (nome == null || nome.trim().isEmpty()) {
+      throw new IllegalArgumentException("O novo status não pode ser nulo.");
+    }
+    this.nome = nome;
+  }
+
+  public void excluir(){
+    this.status = Status.CONCLUIDO;
   }
 
   @Override
