@@ -98,7 +98,6 @@ public class AlunoController {
   }
 
   @PutMapping("/{id}")
-  @Transactional
   public ResponseEntity<AlunoDTO> putAlunoById(
           @PathVariable Long id,
           @RequestBody AlunoDTO alunoDTO,
@@ -119,10 +118,10 @@ public class AlunoController {
               )
       );
     } catch (IllegalArgumentException e) { // Se o ID não existir ou o Status for inválido
-    return ResponseEntity.badRequest().body(new AlunoDTO(null, null, "Erro ao atualizar status: " + e.getMessage(), null));
-  } catch (Exception e) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-  }
+      return ResponseEntity.badRequest().body(new AlunoDTO(null, null, "Erro ao atualizar status: " + e.getMessage(), null));
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
 
   @PatchMapping("/{id}/toggle-active") // PATCH é mais adequado para atualizações parciais

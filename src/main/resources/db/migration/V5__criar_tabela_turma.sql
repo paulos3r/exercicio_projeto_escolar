@@ -6,6 +6,6 @@ CREATE TABLE turma (
     data_final DATE,
     horario VARCHAR(50),
     sala VARCHAR(255),
-    status ENUM('ATIVO', 'INATIVO', 'CONCLUIDO') NOT NULL,
+    status ENUM('ATIVO', 'INATIVO', 'FORMADO') NOT NULL,
     FOREIGN KEY (curso_id) REFERENCES curso(id)
 );

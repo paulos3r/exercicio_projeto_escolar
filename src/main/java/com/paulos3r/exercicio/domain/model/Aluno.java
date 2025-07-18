@@ -92,6 +92,11 @@ public class Aluno {
     System.out.println("Status de Aluno Especial do Aluno " + this.id + " atualizado para: " + alunoEspecial);
   }
 
+  /**
+   * Tornar um aluno especial
+   * @param status O novo status de aluno especial.
+   * @throws IllegalArgumentException Se o status for nulo.
+   */
   public void tornarAlunoEspecial(Status status){
     if (status==null){
       throw new IllegalArgumentException("Status não pode ser nulo.");

@@ -29,9 +29,33 @@ public class Pessoa {
   public Pessoa() {
   }
 
+  /**
+   * Construtor para carregar um aluno existente pelo ( id ) com o usuario
+   * @param id
+   * @param nome
+   * @param cpf
+   * @param data_nascimento
+   * @param endereco
+   * @param telefone
+   * @param usuario
+   * @throws IllegalArgumentException se o cpf for nulo.
+   * @throws IllegalArgumentException Se o nome for nulo.
+   * @throws IllegalArgumentException se o usuario não foi informado ou nulo.
+   * @throws IllegalArgumentException Se o cpf não tiver com a mascara ###.###.###-##.
+   */
   public Pessoa(Long id, String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone, Usuario usuario) {
-    if (cpf == null || !cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
-      throw new IllegalArgumentException("Cpf no padrão incorreto!");
+    if (cpf.isEmpty()){
+      throw new IllegalArgumentException("Cpf não pode ser nulo!");
+    }
+    if (nome.isEmpty()){
+      throw new IllegalArgumentException("Nome não pode ser nulo");
+    }
+    if (usuario == null || usuario.getId() == null){
+      throw new IllegalArgumentException("Usuario não pode ser nulo");
+    }
+
+    if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
+      throw new IllegalArgumentException("Cpf não esta no formato ###.###.###-## ou esta nulo! ");
     }
     this.id = id;
     this.nome = nome;
@@ -41,9 +65,29 @@ public class Pessoa {
     this.telefone = telefone;
     this.usuario = usuario;
   }
+
+  /**
+   * Construtor para carregar um aluno existente pelo ( id )
+   * @param id
+   * @param nome
+   * @param cpf
+   * @param data_nascimento
+   * @param endereco
+   * @param telefone
+   * @throws IllegalArgumentException se o cpf for nulo.
+   * @throws IllegalArgumentException Se o nome for nulo.
+   * @throws IllegalArgumentException Se o cpf não tiver com a mascara ###.###.###-##.
+   */
   public Pessoa(Long id, String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone) {
-    if (cpf == null || !cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
-      throw new IllegalArgumentException("Cpf no padrão incorreto!");
+    if (cpf.isEmpty()){
+      throw new IllegalArgumentException("Cpf não pode ser nulo!");
+    }
+    if (nome.isEmpty()){
+      throw new IllegalArgumentException("Nome não pode ser nulo");
+    }
+
+    if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
+      throw new IllegalArgumentException("Cpf não esta no formato ###.###.###-## ou esta nulo! ");
     }
     this.id = id;
     this.nome = nome;

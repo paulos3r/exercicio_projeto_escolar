@@ -1,7 +1,7 @@
 CREATE TABLE usuario (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255),
-    password VARCHAR(255) UNIQUE,
-    email VARCHAR(100) UNIQUE,
-    tipo_usuario VARCHAR(255)
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'Identificador único do usuário',
+    username VARCHAR(100) NOT NULL UNIQUE COMMENT 'Nome de usuário para login, deve ser único e não nulo',
+    password VARCHAR(255) NOT NULL COMMENT 'Senha do usuário (deve ser armazenada com hash seguro), não nula',
+    email VARCHAR(255) NOT NULL UNIQUE COMMENT 'Endereço de e-mail do usuário, deve ser único e não nulo',
+    tipo_usuario ENUM('ADMIN', 'ALUNO', 'PROFESSOR', 'OUTRO') NOT NULL DEFAULT 'ALUNO' COMMENT 'Tipo de perfil do usuário, com valores predefinidos'
 );

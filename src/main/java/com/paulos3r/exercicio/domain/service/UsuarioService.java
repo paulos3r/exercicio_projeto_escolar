@@ -41,6 +41,11 @@ public class UsuarioService implements UserDetailsService {
     return usuarioRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("o usuario não foi encontrado"));
   }
 
+  public Usuario findUsuarioById(Long id) {
+
+    return this.usuarioRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Usuario não encontrado com o Id: " +id));
+  }
+
   public List<Usuario> findAllUsuario() {
     return this.usuarioRepository.findAll();
   }
