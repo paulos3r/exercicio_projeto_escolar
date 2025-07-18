@@ -5,9 +5,7 @@ CREATE TABLE aluno (
     data_matricula DATETIME NOT NULL COMMENT 'Data e hora da inserção do registro da matricula',
     aluno_especial ENUM('NORMAL', 'ESPECIAL') NOT NULL DEFAULT 'NORMAL' COMMENT 'Status atual do aluno (NORMAL, ESPECIAL)',
     status ENUM('ATIVO', 'INATIVO', 'TRANCADO', 'FORMADO','EVADIDO') NOT NULL DEFAULT 'ATIVO' COMMENT 'Status atual do aluno (ATIVO, INATIVO, TRANCADO, FORMADO,EVADIDO)',
-
-    FOREIGN KEY (pessoa_id) REFERENCES pessoa(id) COMMENT 'Restrição de chave estrangeira para a tabela Pessoa',
-    FOREIGN KEY (matricula_id) REFERENCES matricula(id) COMMENT 'Restrição de chave estrangeira para a tabela Matricula'
+    FOREIGN KEY (pessoa_id) REFERENCES pessoa(id)
 );
 
 -- Índices Adicionais (para otimização de consultas)

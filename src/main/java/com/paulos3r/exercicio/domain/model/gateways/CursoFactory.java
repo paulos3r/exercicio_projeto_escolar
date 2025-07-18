@@ -3,9 +3,11 @@ package com.paulos3r.exercicio.domain.model.gateways;
 import com.paulos3r.exercicio.domain.model.Categoria;
 import com.paulos3r.exercicio.domain.model.Curso;
 import com.paulos3r.exercicio.domain.model.Status;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Component
 public class CursoFactory {
 
   /**
