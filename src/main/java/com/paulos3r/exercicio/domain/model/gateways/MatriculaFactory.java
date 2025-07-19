@@ -10,11 +10,14 @@ import java.time.LocalDateTime;
 @Component
 public class MatriculaFactory {
 
-    public Matricula createMatricula(Aluno aluno_id, Turma turma_id, LocalDateTime data_matricula){
-        return new Matricula(aluno_id, turma_id, data_matricula);
-    }
+    public Matricula createMatricula(Aluno aluno, Turma turma, LocalDateTime data_matricula){
+        if (aluno==null){
+            throw new IllegalArgumentException("Aluno não pode ser nulo");
+        }
+        if (turma==null){
+            throw new IllegalArgumentException("Turma não pode ser nulo");
+        }
 
-    public Matricula updateMatricula(Long id, Aluno aluno_id, Turma turma_id){
-        return new Matricula(id, aluno_id, turma_id);
+        return new Matricula(aluno, turma, data_matricula);
     }
 }

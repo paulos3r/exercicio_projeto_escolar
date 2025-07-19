@@ -10,3 +10,4 @@ CREATE TABLE disciplina (
 -- Índices Adicionais (para otimização de consultas)
 
 CREATE INDEX idx_disciplina_nome ON disciplina(nome);
+CREATE INDEX idx_disciplina_status ON disciplina(status);

@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.domain.model;
 
-import com.paulos3r.exercicio.infrastructure.dto.MatriculaDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -23,47 +22,66 @@ public class Matricula {
   public Matricula() {
   }
 
+  /**
+   *
+   * @param id
+   * @param aluno_id
+   * @param turma_id
+   */
   public Matricula(Long id, Aluno aluno_id, Turma turma_id) {
     this.id = id;
     this.aluno_id = aluno_id;
     this.turma_id = turma_id;
   }
+
+  /**
+   *
+   * @param aluno_id
+   * @param turma_id
+   * @param data_matricula
+   */
   public Matricula(Aluno aluno_id, Turma turma_id, LocalDateTime data_matricula) {
     this.aluno_id = aluno_id;
     this.turma_id = turma_id;
     this.data_matricula = data_matricula;
   }
 
-  public Long getId() {
-    return id;
+  /**
+   * Função para alterar a aluno da matricula
+   * @param aluno
+   */
+  public void alterarVinculoDeMatriculaAluno(Aluno aluno){
+    if (aluno == null){
+      throw new IllegalArgumentException("Aluno não pode ser nulo");
+    }
+    this.aluno_id = aluno;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  /**
+   * Funcao para alterar a turma da matricula
+   * @param turma
+   */
+  public void alterarVinculoDeMatriculaTurma(Turma turma){
+    if (turma == null){
+      throw new IllegalArgumentException("Turma não pode ser nulo");
+    }
+    this.turma_id = turma;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public Aluno getAluno_id() {
     return aluno_id;
   }
 
-  public void setAluno_id(Aluno aluno_id) {
-    this.aluno_id = aluno_id;
-  }
-
   public Turma getTurma_id() {
     return turma_id;
   }
 
-  public void setTurma_id(Turma turma_id) {
-    this.turma_id = turma_id;
-  }
-
   public LocalDateTime getData_matricula() {
     return data_matricula;
-  }
-
-  public void setData_matricula(LocalDateTime data_matricula) {
-    this.data_matricula = data_matricula;
   }
 
   @Override

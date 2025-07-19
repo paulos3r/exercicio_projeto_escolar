@@ -5,7 +5,9 @@ import com.paulos3r.exercicio.domain.service.TurmaService;
 import com.paulos3r.exercicio.infrastructure.dto.MatriculaDTO;
 import com.paulos3r.exercicio.domain.model.Matricula;
 import com.paulos3r.exercicio.domain.service.MatriculaService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,53 +28,82 @@ public class MatriculaController {
   private TurmaService turmaService;
 
   @GetMapping
-  public ResponseEntity<List<Matricula>> getAllMatricula(){
+  public ResponseEntity<List<MatriculaDTO>> getAllMatricula(){
     try {
       var matricula = this.matriculaService.findAllMatricula();
-      return ResponseEntity.ok(matricula);
-    }catch (Exception e){
+
+      return ResponseEntity.status(HttpStatus.OK).body(
+
+              matricula.stream()
+                      .map(matricula1 -> new MatriculaDTO(
+                              matricula1.getAluno_id().getId(),
+                              matricula1.getTurma_id().getId()
+                      )).toList()
+
+      );
+    } catch (Exception e){
+      System.out.println("Erro interno " + e.getMessage());
       return ResponseEntity.notFound().build();
     }
   }
   @GetMapping("/{id}")
-  public ResponseEntity<Matricula> getMatriculaById(@PathVariable Long id){
+  public ResponseEntity<MatriculaDTO> getMatriculaById(@PathVariable Long id){
     try {
-      var matricula = this.matriculaService.findMatriculaById(id);
-      return ResponseEntity.ok(matricula);
+
+      var matricula = matriculaService.findMatriculaById(id);
+
+      return ResponseEntity.status(HttpStatus.OK).body(
+              new MatriculaDTO(
+                matricula.getAluno_id().getId(),
+                matricula.getTurma_id().getId()
+              )
+      );
     }catch (Exception e){
+      System.out.println("Erro interno " + e.getMessage());
       return ResponseEntity.notFound().build();
     }
   }
 
   @PostMapping
-  public ResponseEntity<Matricula> postMatricula(@RequestBody MatriculaDTO matriculaDTO){
+  public ResponseEntity<MatriculaDTO> postMatricula(@RequestBody MatriculaDTO matriculaDTO){
     try {
-      var aluno = alunoService.findAlunoById(matriculaDTO.aluno_id());
-      var turma = turmaService.findTurmaById(matriculaDTO.turma_id());
 
-      var matricula = this.matriculaService.saveMatricula(new Matricula(aluno,turma, LocalDateTime.now()));
+      matriculaService.saveMatricula(
+              matriculaDTO.aluno_id(),
+              matriculaDTO.turma_id());
 
-      return ResponseEntity.ok(matricula);
-    }catch (Exception e){
+      return ResponseEntity.status(HttpStatus.CREATED).body(matriculaDTO);
+    } catch (IllegalArgumentException e){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    } catch (EntityNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    } catch (Exception e){
       return ResponseEntity.notFound().build();
     }
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Matricula> putMatricula(@PathVariable Long id, @RequestBody MatriculaDTO matriculaDTO){
+  public ResponseEntity<MatriculaDTO> putMatricula(@PathVariable Long id, @RequestBody MatriculaDTO matriculaDTO){
     try {
-      var aluno = alunoService.findAlunoById(matriculaDTO.aluno_id());
-      var turma = turmaService.findTurmaById(matriculaDTO.turma_id());
 
-      var matricula = this.matriculaService.updateMatricula(id, new Matricula(id,aluno,turma));
-      return ResponseEntity.ok(matricula);
-    }catch (Exception e){
+      matriculaService.updateMatricula(
+              id,
+              matriculaDTO.aluno_id(),
+              matriculaDTO.turma_id());
+
+      return ResponseEntity.status(HttpStatus.OK).body(matriculaDTO);
+
+    } catch (IllegalArgumentException e){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    } catch (EntityNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    } catch (Exception e){
       return ResponseEntity.notFound().build();
     }
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Matricula> getAllMatricula(@PathVariable Long id){
+  public ResponseEntity<MatriculaDTO> getAllMatricula(@PathVariable Long id){
     try {
       return ResponseEntity.noContent().build();
     }catch (Exception e){

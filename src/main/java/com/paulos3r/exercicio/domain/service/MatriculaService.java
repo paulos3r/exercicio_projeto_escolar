@@ -1,52 +1,73 @@
 package com.paulos3r.exercicio.domain.service;
 
+import com.paulos3r.exercicio.domain.model.Aluno;
+import com.paulos3r.exercicio.domain.model.Turma;
 import com.paulos3r.exercicio.domain.model.gateways.MatriculaFactory;
 import com.paulos3r.exercicio.infrastructure.dto.MatriculaDTO;
 import com.paulos3r.exercicio.domain.model.Matricula;
 import com.paulos3r.exercicio.infrastructure.repository.MatriculaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class MatriculaService {
 
   @Autowired
-  private MatriculaRepository repository;
+  private final MatriculaRepository repository;
 
   @Autowired
-  private AlunoService alunoService;
+  private final AlunoService alunoService;
 
   @Autowired
-  private TurmaService turmaService;
+  private final TurmaService turmaService;
 
-  public List<Matricula> findAllMatricula() throws Exception {
-    return this.repository.findAll().stream().toList();
+  @Autowired
+  private final MatriculaFactory matriculaFactory;
+
+  public MatriculaService(MatriculaRepository repository, AlunoService alunoService, TurmaService turmaService, MatriculaFactory matriculaFactory) {
+    this.repository = repository;
+    this.alunoService = alunoService;
+    this.turmaService = turmaService;
+    this.matriculaFactory = matriculaFactory;
   }
 
-  public Matricula findMatriculaById(Long id) throws Exception {
-    return this.repository.findById(id).orElseThrow(()->new Exception("Matricula não encontrada"));
+  public List<Matricula> findAllMatricula(){
+    return repository.findAll().stream().toList();
   }
+
+  public Matricula findMatriculaById(Long id){
+    return repository.findById(id)
+            .orElseThrow(()->new EntityNotFoundException("Matricula não encontrada"));
+  }
+
   @Transactional
-  public Matricula saveMatricula(Matricula matricula) throws Exception {
-    var aluno = this.alunoService.findAlunoById(matricula.getAluno_id().getId());
-    var turma = this.turmaService.findTurmaById(matricula.getTurma_id().getId());
+  public Matricula saveMatricula(Long alunoId, Long turmaId){
+    Aluno aluno = alunoService.findAlunoById(alunoId);
+    Turma turma = turmaService.findTurmaById(turmaId);
 
-    var matriculaFactory = new MatriculaFactory().createMatricula(aluno,turma,matricula.getData_matricula());
-    return this.repository.save(matriculaFactory);
+    LocalDateTime dataMatricula = LocalDateTime.now();
+
+    var matricula = matriculaFactory.createMatricula(aluno,turma,dataMatricula);
+    return this.repository.save(matricula);
   }
+
   @Transactional
-  public Matricula updateMatricula(Long id, Matricula matricula) throws Exception {
-    this.repository.findById(id).orElseThrow(()->new Exception("Matricula não encontrada"));
+  public Matricula updateMatricula(Long id, Long alunoId, Long turmaId){
 
-    var aluno = this.alunoService.findAlunoById(matricula.getAluno_id().getId());
-    var turma = this.turmaService.findTurmaById(matricula.getTurma_id().getId());
+    Matricula matricula =  repository.findById(id)
+            .orElseThrow(()->new EntityNotFoundException("Matricula não encontrada"));
 
+    Aluno aluno = alunoService.findAlunoById(alunoId);
+    Turma turma = turmaService.findTurmaById(turmaId);
 
-    var matriculaFactory = new MatriculaFactory().updateMatricula(id,aluno,turma);
+    matricula.alterarVinculoDeMatriculaAluno(aluno);
+    matricula.alterarVinculoDeMatriculaTurma(turma);
 
-    return this.repository.save(matriculaFactory);
+    return this.repository.save(matricula);
   }
 }
