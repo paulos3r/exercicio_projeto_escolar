@@ -5,6 +5,7 @@ import com.paulos3r.exercicio.domain.model.gateways.MinistranteFactory;
 import com.paulos3r.exercicio.infrastructure.dto.MinistranteDTO;
 import com.paulos3r.exercicio.domain.model.Ministrante;
 import com.paulos3r.exercicio.infrastructure.repository.MinistranteRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,11 +24,11 @@ public class MinistranteService {
   @Autowired
   private DocenteService docenteService;
 
-  public Ministrante findMinistranteById(Long id) throws Exception {
-    return this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+  public Ministrante findMinistranteById(Long id) {
+    return this.repository.findById(id).orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
   }
 
-  public List<Ministrante> findAllMinistrante() throws Exception {
+  public List<Ministrante> findAllMinistrante(){
     return this.repository.findAll();
   }
   @Transactional

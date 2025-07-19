@@ -4,8 +4,8 @@ import com.paulos3r.exercicio.domain.model.Grade;
 import com.paulos3r.exercicio.domain.model.Ministrante;
 import com.paulos3r.exercicio.domain.model.Turma;
 import com.paulos3r.exercicio.domain.model.gateways.GradeFactory;
-import com.paulos3r.exercicio.infrastructure.dto.GradeDTO;
 import com.paulos3r.exercicio.infrastructure.repository.GradeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,47 +16,62 @@ import java.util.List;
 public class GradeService {
 
   @Autowired
-  private GradeRepository repository;
+  private final GradeRepository repository;
 
   @Autowired
-  private TurmaService turmaService;
+  private final TurmaService turmaService;
 
   @Autowired
-  private MinistranteService ministranteService;
+  private final MinistranteService ministranteService;
 
-  public Grade findGradeById(Long id) throws Exception {
-    return this.repository.findGradeById(id).orElseThrow(()-> new Exception("Grade não encontrado"));
+  @Autowired
+  private GradeFactory gradeFactory;
+
+  public GradeService(GradeRepository repository, TurmaService turmaService, MinistranteService ministranteService) {
+    this.repository = repository;
+    this.turmaService = turmaService;
+    this.ministranteService = ministranteService;
   }
 
-  public List<Grade> findAllGrade() throws Exception {
-    return this.repository.findAll();
+  public Grade findGradeById(Long id) {
+    return this.repository.findGradeById(id)
+            .orElseThrow(()-> new EntityNotFoundException("Grade não encontrado"));
+  }
+
+  public List<Grade> findAllGrade() {
+    return repository.findAll();
   }
 
   @Transactional
-  public Grade saveGrade(Grade grade) throws Exception {
-    var turma = this.turmaService.findTurmaById(grade.getTurma_id().getId());
-    var ministrante = this.ministranteService.findMinistranteById(grade.getMinistrante_id().getId());
+  public Grade saveGrade( Long turmaId, Long ministrateId ){
 
-    return this.repository.save(new Grade(turma,ministrante));
+    Turma turma = this.turmaService.findTurmaById(turmaId);
+    Ministrante ministrante = ministranteService.findMinistranteById(ministrateId);
+
+    Grade grade = gradeFactory.createGrade(turma,ministrante);
+
+    return repository.save( grade );
   }
 
   @Transactional
-  public Grade updateGrade(Long id, Grade grade ) throws Exception {
-    Turma turma = this.turmaService.findTurmaById(grade.getTurma_id().getId());
-    Ministrante ministrante = this.ministranteService.findMinistranteById(grade.getMinistrante_id().getId());
+  public Grade updateGrade(Long gradeId, Long turmaId, Long ministranteId ) {
 
-    Grade gradeRepository = this.repository.findById(id).orElseThrow(()-> new Exception("Grade não encontrada"));
+    Turma turma = turmaService.findTurmaById(turmaId);
+    Ministrante ministrante = ministranteService.findMinistranteById(ministranteId);
 
-    GradeFactory gradeFactory = new GradeFactory();
+    Grade grade = this.repository.findById(gradeId)
+            .orElseThrow(()-> new EntityNotFoundException("Grade não encontrada pelo ID: " + gradeId));
 
-    gradeFactory.updateGade(gradeRepository.getId(), turma,ministrante);
+    grade.alterarVinculoGradeTurma(turma);
+    grade.alterarVinculoGradeMinistrante(ministrante);
 
     return this.repository.save(grade);
   }
 
   @Transactional
-  public void deleteGrade(Long id) throws Exception {
-    var grade = this.repository.findById(id).orElseThrow(()->new Exception("Grade não encontrada"));
+  public void deleteGrade(Long id){
+    var grade = this.repository.findById(id)
+            .orElseThrow(()->new EntityNotFoundException("Grade não encontrada pelo ID: " + id));
     this.repository.delete(grade);
   }
 }

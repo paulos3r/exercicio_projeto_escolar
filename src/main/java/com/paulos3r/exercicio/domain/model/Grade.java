@@ -22,15 +22,40 @@ public class Grade {
   public Grade() {
   }
 
+  /**
+   * Construtor para buscar Grade pelo [ ID ]
+   * @param id
+   * @param turma_id
+   * @param ministrante_id
+   */
   public Grade(Long id, Turma turma_id, Ministrante ministrante_id) {
     this.id = id;
     this.turma_id = turma_id;
     this.ministrante_id = ministrante_id;
   }
 
+  /**
+   * Construtor para criar uma nova Grade
+   * @param turma_id
+   * @param ministrante_id
+   */
   public Grade(Turma turma_id, Ministrante ministrante_id) {
     this.turma_id = turma_id;
     this.ministrante_id = ministrante_id;
+  }
+
+  public void alterarVinculoGradeTurma(Turma turma){
+    if (turma == null){
+      throw new IllegalArgumentException("Turma não pode ser nulo");
+    }
+    this.turma_id=turma;
+  }
+
+  public void alterarVinculoGradeMinistrante(Ministrante ministrante){
+    if (ministrante == null){
+      throw new IllegalArgumentException("Turma não pode ser nulo");
+    }
+    this.ministrante_id = ministrante;
   }
 
   public Long getId() {
@@ -45,13 +70,8 @@ public class Grade {
     return turma_id;
   }
 
-
   public Ministrante getMinistrante_id() {
     return ministrante_id;
-  }
-
-  public void setMinistrante_id(Ministrante ministrante_id) {
-    this.ministrante_id = ministrante_id;
   }
 
   @Override

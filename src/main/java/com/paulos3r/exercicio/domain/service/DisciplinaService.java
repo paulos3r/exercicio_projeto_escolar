@@ -1,10 +1,10 @@
 package com.paulos3r.exercicio.domain.service;
 
+import com.paulos3r.exercicio.domain.model.Disciplina;
 import com.paulos3r.exercicio.domain.model.Status;
 import com.paulos3r.exercicio.domain.model.gateways.DisciplinaFactory;
-import com.paulos3r.exercicio.infrastructure.dto.DisciplinaDTO;
-import com.paulos3r.exercicio.domain.model.Disciplina;
 import com.paulos3r.exercicio.infrastructure.repository.DisciplinaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,37 +15,77 @@ import java.util.List;
 public class DisciplinaService {
 
   @Autowired
-  private DisciplinaRepository repository;
+  private final DisciplinaRepository repository;
 
-  public List<Disciplina> findAllDisciplina() throws Exception{
+  @Autowired
+  private final DisciplinaFactory disciplinaFactory;
+
+  public DisciplinaService(DisciplinaRepository repository, DisciplinaFactory disciplinaFactory) {
+    this.repository = repository;
+    this.disciplinaFactory = disciplinaFactory;
+  }
+
+  public List<Disciplina> findAllDisciplina(){
     return this.repository.findAll();
   }
 
-  public Disciplina findDisciplinaById(Long id) throws Exception {
-    return this.repository.findById(id).orElseThrow(()-> new Exception("Disciplina não encontrado"));
+  public Disciplina findDisciplinaById(Long id){
+    return this.repository.findById(id)
+            .orElseThrow(()-> new EntityNotFoundException("Disciplina não encontrado pelo ID: " + id));
   }
 
   @Transactional
-  public Disciplina saveAluno(Disciplina disciplina) throws Exception {
+  public Disciplina saveAluno(
+          String nome,
+          String ementa,
+          Double carga_horaria,
+          Integer porcentagem_teoria,
+          Integer porcentagem_pratica,
+          String status
+  ){
+    Status isStatus = Status.valueOf( status.trim().toUpperCase() );
 
-    var disciplinaFactory = new DisciplinaFactory().createDisciplina(disciplina.getNome(), disciplina.getEmenta(), disciplina.getCarga_horaria(), disciplina.getPorcentagem_teoria(), disciplina.getPorcentagem_pratica(), disciplina.getStatus());
-    return this.repository.save(disciplinaFactory);
+    Disciplina disciplina = disciplinaFactory.createDisciplina(
+            nome,
+            ementa,
+            carga_horaria,
+            porcentagem_teoria,
+            porcentagem_pratica,
+            isStatus
+    );
+    return this.repository.save(disciplina);
   }
 
   @Transactional
-  public Disciplina updateDisciplina(Long id, Disciplina disciplina) throws Exception{
-    this.repository.findById(id).orElseThrow(()-> new Exception("Não foi possivel encontrar o cadastro"));
+  public Disciplina updateDisciplina(Long disciplinaId,
+                                     String nome,
+                                     String ementa,
+                                     Double carga_horaria,
+                                     Integer porcentagem_teoria,
+                                     Integer porcentagem_pratica,
+                                     String status
+  ){
+    Disciplina disciplina = this.repository.findById(disciplinaId)
+            .orElseThrow(()-> new EntityNotFoundException("Não foi possivel encontrar o cadastro ID: " + disciplinaId));
 
-    var disciplinaFactory = new DisciplinaFactory().updateDisciplina(id,disciplina.getNome(), disciplina.getEmenta(), disciplina.getCarga_horaria(), disciplina.getPorcentagem_teoria(), disciplina.getPorcentagem_pratica(), disciplina.getStatus());
+    Status isStatus = Status.valueOf(status.trim().toUpperCase());
 
-    return this.repository.save(disciplinaFactory);
+    disciplina.atulizarNome(nome);
+    disciplina.atulizarEmenta(ementa);
+    disciplina.atulizarCargaHoraria(carga_horaria);
+    disciplina.atulizarPorcentagemTeoriaPratica(porcentagem_teoria,porcentagem_pratica);
+    disciplina.atulizarStatus(isStatus);
+
+    return this.repository.save(disciplina);
   }
 
   @Transactional
-  public void deleteDisciplina(Long id) throws Exception{
-    Disciplina disciplina = this.repository.findById(id).orElseThrow(()-> new Exception("Disciplina não encontrada"));
+  public void deleteDisciplina(Long disciplinaId){
 
-    disciplina.deleteDisciplina();
+    Disciplina disciplina = this.repository.findById(disciplinaId)
+            .orElseThrow(()-> new EntityNotFoundException("Disciplina não encontrada ID: " + disciplinaId));
+
+    disciplina.delete();
 
     this.repository.save(disciplina);
   }

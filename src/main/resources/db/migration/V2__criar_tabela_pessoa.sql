@@ -6,8 +6,6 @@ CREATE TABLE pessoa (
     endereco VARCHAR(500) COMMENT 'Endereço completo da pessoa (opcional, se não for sempre obrigatório)',
     telefone VARCHAR(20) COMMENT 'Número de telefone da pessoa (formato flexível, ex: (XX) XXXXX-XXXX)',
     usuario_id BIGINT NOT NULL UNIQUE COMMENT 'ID do usuário associado a esta pessoa, deve ser único e não nulo',
-
-    -- Definição da Chave Estrangeira com restrição de exclusão
     FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE RESTRICT
     -- ON DELETE RESTRICT: Impede a exclusão de um usuário se houver uma pessoa associada a ele.
     -- ON DELETE CASCADE: Exclui a pessoa automaticamente se o usuário associado for excluído (use com cautela!).
@@ -16,8 +14,6 @@ CREATE TABLE pessoa (
 
 -- Índices Adicionais (para otimização de consultas)
 
--- Índice para 'nome' se você frequentemente buscar pessoas pelo nome ou ordenar por ele
 CREATE INDEX idx_pessoa_nome ON pessoa (nome);
-
--- Índice para 'telefone' se você frequentemente buscar pessoas pelo telefone
 CREATE INDEX idx_pessoa_telefone ON pessoa (telefone);
+CREATE INDEX idx_pessoa_cpf ON pessoa (cpf);

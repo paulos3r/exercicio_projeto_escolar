@@ -3,9 +3,11 @@ package com.paulos3r.exercicio.domain.model.gateways;
 import com.paulos3r.exercicio.domain.model.Aluno;
 import com.paulos3r.exercicio.domain.model.Matricula;
 import com.paulos3r.exercicio.domain.model.Turma;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Component
 public class MatriculaFactory {
 
     public Matricula createMatricula(Aluno aluno_id, Turma turma_id, LocalDateTime data_matricula){

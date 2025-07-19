@@ -32,9 +32,16 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(
                     req -> {
                       // acesso publico
-                      req.requestMatchers("/autenticar/login", "/usuario/registrar", "/usuario/verificar-conta", "/**").permitAll();
+                      req.requestMatchers("/autenticar/login", "/usuario/registrar", "/usuario/verificar-conta").permitAll();
                       req.requestMatchers(HttpMethod.GET, "/cursos").permitAll();
-                      // req.requestMatchers(HttpMethod.GET, "/cursos/**").permitAll();  GENERICO
+                      req.requestMatchers(
+                              "/v2/api-docs",
+                              "/v3/api-docs",
+                              "/swagger-resources/**",
+                              "/swagger-ui/**",
+                              "/webjars/**",
+                              "/swagger-ui.html"
+                      );
                       req.requestMatchers(HttpMethod.GET, "/alunos").hasRole("DOCENTE");
                       req.requestMatchers(HttpMethod.POST, "/alunos").hasRole("MODERADOR");
                       req.requestMatchers(HttpMethod.DELETE, "/alunos").hasRole("MODERADOR");
