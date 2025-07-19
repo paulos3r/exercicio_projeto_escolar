@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.domain.model;
 
-import com.paulos3r.exercicio.infrastructure.dto.DocenteDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -20,38 +19,56 @@ public class Docente {
   public Docente() {
   }
 
+  /**
+   * Construtor para buscar o docente pelo [ id ]
+   * @param id
+   * @param pessoa_id
+   * @param data_contratacao
+   */
   public Docente(Long id, Pessoa pessoa_id, LocalDate data_contratacao) {
     this.id = id;
     this.pessoa_id = pessoa_id;
     this.data_contratacao = data_contratacao;
   }
+
+  /**
+   * Construtor para criar um docente Factory
+   * @param pessoa_id
+   * @param data_contratacao
+   */
   public Docente(Pessoa pessoa_id, LocalDate data_contratacao) {
-    this.id = id;
     this.pessoa_id = pessoa_id;
     this.data_contratacao = data_contratacao;
   }
-  public Long getId() {
-    return id;
+
+  public void atualizarDataContratacao(LocalDate data_contratacao){
+    if (data_contratacao == null){
+      throw new IllegalArgumentException("A data informada não pode ser nula");
+    }
+    this.data_contratacao = data_contratacao;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void vincularPessoaAoDocente(Pessoa pessoa){
+    if (pessoa == null){
+      throw new IllegalArgumentException("Pessoa nao pode ser nula");
+    }
+    this.pessoa_id = pessoa;
+  }
+
+  public void excluir(){
+
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public Pessoa getPessoa_id() {
     return pessoa_id;
   }
 
-  public void setPessoa_id(Pessoa pessoa_id) {
-    this.pessoa_id = pessoa_id;
-  }
-
   public LocalDate getData_contratacao() {
     return data_contratacao;
-  }
-
-  public void setData_contratacao(LocalDate data_contratacao) {
-    this.data_contratacao = data_contratacao;
   }
 
   @Override

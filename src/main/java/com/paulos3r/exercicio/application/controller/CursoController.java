@@ -86,14 +86,13 @@ public class CursoController {
     }catch (Exception e){
       return ResponseEntity.notFound().build();
     }
-
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> deleteCurso(@PathVariable Long id){
     try {
       cursoService.deleteCurso(id);
-      return ResponseEntity.noContent().build();
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Curso foi excluido com sucesso ID: " + id);
     } catch (Exception e){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não foi encontrado ID: " + id);
     }

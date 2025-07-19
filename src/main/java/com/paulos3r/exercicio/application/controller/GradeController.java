@@ -1,10 +1,8 @@
 package com.paulos3r.exercicio.application.controller;
 
-import com.paulos3r.exercicio.domain.service.MinistranteService;
-import com.paulos3r.exercicio.domain.service.TurmaService;
-import com.paulos3r.exercicio.infrastructure.dto.GradeDTO;
 import com.paulos3r.exercicio.domain.model.Grade;
 import com.paulos3r.exercicio.domain.service.GradeService;
+import com.paulos3r.exercicio.infrastructure.dto.GradeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +12,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/grade")
 public class GradeController {
+
   @Autowired
-  private GradeService gradeService;
+  private final GradeService gradeService;
 
   @GetMapping
   public ResponseEntity<List<Grade>> getAllGrade(){
     try {
-      var grade = this.gradeService.findAllGrade();
+
+      Grade grade = gradeService.findAllGrade();
+
       return ResponseEntity.ok(grade);
     }catch (Exception e){
       return ResponseEntity.notFound().build();
@@ -39,10 +40,8 @@ public class GradeController {
   @PostMapping
   public ResponseEntity<Grade> postGrade(@RequestBody GradeDTO gradeDTO){
     try {
-      var turma = new TurmaService().findTurmaById(gradeDTO.turma_id());
-      var ministrante = new MinistranteService().findMinistranteById(gradeDTO.ministrante_id());
 
-      var grade = this.gradeService.saveGrade(new Grade(turma,ministrante));
+      var grade = this.gradeService.saveGrade();
 
       return ResponseEntity.ok(grade);
     }catch (Exception e){
@@ -53,12 +52,10 @@ public class GradeController {
   @PutMapping("/{id}")
   public ResponseEntity<Grade> putGradeById(@PathVariable Long id, @RequestBody GradeDTO gradeDTO){
     try {
-      var turma = new TurmaService().findTurmaById(gradeDTO.turma_id());
-      var ministrante = new MinistranteService().findMinistranteById(gradeDTO.ministrante_id());
 
       new GradeService().findGradeById(id);
 
-      var update = this.gradeService.updateGrade(id,new Grade(gradeDTO.id(), turma, ministrante));
+      var update = this.gradeService.updateGrade();
 
       return ResponseEntity.ok(update);
     }catch (Exception e){

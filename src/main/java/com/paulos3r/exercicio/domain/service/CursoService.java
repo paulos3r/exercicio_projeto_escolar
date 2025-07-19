@@ -5,6 +5,7 @@ import com.paulos3r.exercicio.domain.model.Curso;
 import com.paulos3r.exercicio.domain.model.Status;
 import com.paulos3r.exercicio.domain.model.gateways.CursoFactory;
 import com.paulos3r.exercicio.infrastructure.repository.CursoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,12 +28,12 @@ public class CursoService {
     this.cursoFactory = cursoFactory;
   }
 
-  public Curso findCursoById(Long id) throws Exception {
+  public Curso findCursoById(Long id){
     return cursoRepository.findById(id)
-            .orElseThrow(()-> new Exception("Curso não encontrado"));
+            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
   }
 
-  public List<Curso> findAllCurso() throws Exception {
+  public List<Curso> findAllCurso(){
     return cursoRepository.findAll();
   }
 
@@ -44,9 +45,9 @@ public class CursoService {
   }
 
   @Transactional
-  public Curso updateCurso(Long cursoId, String nome, Status status) throws Exception{
+  public Curso updateCurso(Long cursoId, String nome, Status status){
     Curso curso = cursoRepository.findById(cursoId)
-            .orElseThrow(()-> new Exception("Curso não encontrado"));
+            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
 
     curso.atualizarStatus(status);
     curso.atualizarNome(nome);
@@ -54,9 +55,9 @@ public class CursoService {
     return cursoRepository.save(curso);
   }
   @Transactional
-  public void deleteCurso(Long id) throws Exception{
+  public void deleteCurso(Long id){
     Curso curso = cursoRepository.findById(id)
-            .orElseThrow(()-> new Exception("Curso não encontrado"));
+            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
 
     curso.excluir();
 

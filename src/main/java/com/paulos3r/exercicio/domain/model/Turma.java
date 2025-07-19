@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.domain.model;
 
-import com.paulos3r.exercicio.infrastructure.dto.TurmaDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -27,7 +26,33 @@ public class Turma {
   public Turma() {
   }
 
+  /**
+   * Construtor para buscar tuma TURMA [ id ]
+   * @param id
+   * @param curso_id
+   * @param nome
+   * @param data_inicio
+   * @param data_final
+   * @param horario
+   * @param sala
+   * @param status
+   */
   public Turma(Long id, Curso curso_id, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status) {
+    if ( id == null ){
+      throw new IllegalArgumentException("O ID não pode ser nulo ou vazio");
+    }
+    if ( nome == null || nome.trim().isEmpty() ){
+      throw new IllegalArgumentException("O NOME não pode ser nulo ou vazio");
+    }
+    if ( data_inicio == null ) {
+      throw new IllegalArgumentException("A Data do inicio do curso  não foi informada");
+    }
+    if ( data_final == null ) {
+      throw new IllegalArgumentException("A Data do final do curso  não foi informada");
+    }
+    if ( sala == null || sala.trim().isEmpty()){
+      throw new IllegalArgumentException("A sala não foi informada");
+    }
     this.id = id;
     this.curso_id = curso_id;
     this.nome = nome;
@@ -38,8 +63,41 @@ public class Turma {
     this.status = status;
   }
 
-  public Turma(Curso curso_id, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status) {
-    this.curso_id = curso_id;
+  /**
+   * Construtor para utilizar para criaçao de uma nova TURMA
+   * @param nome
+   * @param data_inicio
+   * @param data_final
+   * @param horario
+   * @param sala
+   * @param status
+   */
+  public Turma(Curso curso, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status) {
+
+    if(curso==null){
+      throw new IllegalArgumentException("O curso não pode ser nulo.");
+    }
+
+    if ( nome == null || nome.trim().isEmpty() ){
+      throw new IllegalArgumentException("O NOME não pode ser nulo ou vazio.");
+    }
+
+    if ( data_inicio == null ) {
+      throw new IllegalArgumentException("A Data do início do Turma  não foi informada.");
+    }
+
+    if ( data_final == null ) {
+      throw new IllegalArgumentException("A Data do final do Turma  não foi informada.");
+    }
+
+    if (data_inicio.isAfter(data_final)){
+      throw new IllegalArgumentException("Data de início não pode ser maior que a data final.");
+    }
+
+    if ( sala == null || sala.trim().isEmpty()){
+      throw new IllegalArgumentException("A sala não foi informada");
+    }
+    this.curso_id = curso;
     this.nome = nome;
     this.data_inicio = data_inicio;
     this.data_final = data_final;
@@ -48,73 +106,88 @@ public class Turma {
     this.status = status;
   }
 
-  public void deleteTurma(){
-    this.setStatus(Status.INATIVO);
+  /**
+   * Altera o status da Turma pora inativo
+   */
+  public void excluir(){
+    this.status = Status.INATIVO;
+  }
+
+  public void atualizaNomeTurma(String nome){
+    if (nome == null || nome.trim().isEmpty()){
+      throw new IllegalArgumentException("Nome da turma não pode ser nulo ou vazio");
+    }
+    this.nome = nome;
+  }
+
+  public void atualizaDataInicioFim(LocalDate data_inicio, LocalDate data_final){
+    if (data_inicio == null) {
+      throw new IllegalArgumentException("A data de início não pode ser nula.");
+    }
+    if (data_final == null) {
+      throw new IllegalArgumentException("A data final não pode ser nula.");
+    }
+    if (data_inicio.isAfter(data_final)){
+      throw new IllegalArgumentException("Data de início não pode ser maior que a data final.");
+    }
+    this.data_inicio = data_inicio; // Assigning the passed dates
+    this.data_final = data_final;
+  }
+
+  public void atualizarHorario(String horario){
+    if (horario == null || horario.trim().isEmpty()){
+      throw new IllegalArgumentException("O horario do Turma não foi informado ou esta nulo");
+    }
+    this.horario = horario;
+  }
+
+  public void atualizarSala(String sala){
+    if (sala == null || sala.trim().isEmpty()){
+      throw new IllegalArgumentException("O sala do Turma não foi informado ou esta nulo");
+    }
+    this.sala = sala;
+  }
+
+  public void atualizarStatus(Status status){
+    if (status.name().isEmpty()){
+      throw new IllegalArgumentException("O Status do Turma não foi informado ou esta nulo");
+    }
+    this.status = Status.INATIVO;
   }
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   public Curso getCurso_id() {
     return curso_id;
-  }
-
-  public void setCurso_id(Curso curso_id) {
-    this.curso_id = curso_id;
   }
 
   public String getNome() {
     return nome;
   }
 
-  public void setNome(String nome) {
-    this.nome = nome;
-  }
-
   public LocalDate getData_inicio() {
     return data_inicio;
-  }
-
-  public void setData_inicio(LocalDate data_inicio) {
-    this.data_inicio = data_inicio;
   }
 
   public LocalDate getData_final() {
     return data_final;
   }
 
-  public void setData_final(LocalDate data_final) {
-    this.data_final = data_final;
-  }
-
   public String getHorario() {
     return horario;
-  }
-
-  public void setHorario(String horario) {
-    this.horario = horario;
   }
 
   public String getSala() {
     return sala;
   }
 
-  public void setSala(String sala) {
-    this.sala = sala;
-  }
 
   public Status getStatus() {
     return status;
   }
 
-  public void setStatus(Status status) {
-    this.status = status;
-  }
 
   @Override
   public boolean equals(Object o) {

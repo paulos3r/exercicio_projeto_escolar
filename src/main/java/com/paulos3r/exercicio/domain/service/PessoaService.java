@@ -66,8 +66,8 @@ public class PessoaService {
    * @throws Exception
    */
   @Transactional
-  public Pessoa updatePessoa(Long id, PessoaDTO pessoaDTO) throws Exception {
-    Pessoa pessoaIsPresent = this.repository.findById(id).orElseThrow(() -> new Exception("Não encontrado"));
+  public Pessoa updatePessoa(Long id, PessoaDTO pessoaDTO){
+    Pessoa pessoaIsPresent = this.repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Não encontrado"));
     pessoaIsPresent.atualizarPessoa(pessoaDTO);
 
     return this.repository.save(pessoaIsPresent);
@@ -79,8 +79,8 @@ public class PessoaService {
    * @throws Exception
    */
   @Transactional
-  public void deletePessoa(Long id) throws Exception {
-    this.repository.findById(id).orElseThrow(() -> new Exception("Cadastro não encontrado"));
+  public void deletePessoa(Long id){
+    this.repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cadastro não encontrado"));
     this.repository.deleteById(id);
   }
 }

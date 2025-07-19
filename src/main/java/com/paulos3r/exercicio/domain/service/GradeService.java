@@ -39,6 +39,7 @@ public class GradeService {
 
     return this.repository.save(new Grade(turma,ministrante));
   }
+
   @Transactional
   public Grade updateGrade(Long id, Grade grade ) throws Exception {
     Turma turma = this.turmaService.findTurmaById(grade.getTurma_id().getId());
@@ -52,6 +53,7 @@ public class GradeService {
 
     return this.repository.save(grade);
   }
+
   @Transactional
   public void deleteGrade(Long id) throws Exception {
     var grade = this.repository.findById(id).orElseThrow(()->new Exception("Grade não encontrada"));

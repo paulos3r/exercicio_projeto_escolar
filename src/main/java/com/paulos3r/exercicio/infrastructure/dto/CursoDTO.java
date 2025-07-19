@@ -3,7 +3,7 @@ package com.paulos3r.exercicio.infrastructure.dto;
 import java.time.LocalDateTime;
 
 /**
- *
+ * @param id
  * @param nome
  * @param categoria_id
  * @param data_criacao

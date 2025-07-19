@@ -2,10 +2,10 @@ package com.paulos3r.exercicio.domain.service;
 
 import com.paulos3r.exercicio.domain.model.Curso;
 import com.paulos3r.exercicio.domain.model.Status;
-import com.paulos3r.exercicio.domain.model.gateways.TurmaFactory;
-import com.paulos3r.exercicio.infrastructure.dto.TurmaDTO;
 import com.paulos3r.exercicio.domain.model.Turma;
+import com.paulos3r.exercicio.domain.model.gateways.TurmaFactory;
 import com.paulos3r.exercicio.infrastructure.repository.TurmaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,43 +17,58 @@ import java.util.List;
 public class TurmaService {
 
   @Autowired
-  private TurmaRepository repository;
+  private final TurmaRepository repository;
 
   @Autowired
-  private CursoService cursoService;
+  private final CursoService cursoService;
 
-  public Turma findTurmaById(Long id) throws Exception {
-    return this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
+  @Autowired
+  private final TurmaFactory turmaFactory;
+
+  public TurmaService(TurmaRepository repository, CursoService cursoService, TurmaFactory turmaFactory) {
+    this.repository = repository;
+    this.cursoService = cursoService;
+    this.turmaFactory = turmaFactory;
   }
 
-  public List<Turma> findAllTurma() throws Exception {
-    return this.repository.findAll();
+  public Turma findTurmaById(Long id){
+    return repository.findById(id).orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
   }
+
+  public List<Turma> findAllTurma(){
+    return repository.findAll();
+  }
+
   @Transactional
-  public Turma saveTurma(Turma turma) throws Exception {
+  public Turma saveTurma(Long cursoId, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status) {
 
-    var curso = cursoService.findCursoById(turma.getCurso_id().getId());
+    Curso curso = cursoService.findCursoById(cursoId);
 
-    TurmaFactory turmaFactory = new TurmaFactory();
-    Turma newTurma = turmaFactory.createTurma(curso, turma.getNome(), turma.getData_inicio(), turma.getData_final(), turma.getHorario(), turma.getSala(), Status.ATIVO);
+    Turma turma = turmaFactory.createTurma(curso,nome,data_inicio,data_final,horario,sala,status);
 
-    this.repository.save(newTurma);
-    return newTurma;
+    return repository.save(turma);
   }
+
   @Transactional
-  public Turma updateTurma(Long id, Turma turma) throws Exception{
-    this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
-    var curso = cursoService.findCursoById(turma.getCurso_id().getId());
+  public Turma updateTurma(Long turmaId, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status ){
 
-    var turmaFactory = new TurmaFactory().updateTurma(id, curso, turma.getNome(), turma.getData_inicio(), turma.getData_final(), turma.getHorario(), turma.getSala(), Status.ATIVO);
+    Turma turma = repository.findById(turmaId).orElseThrow(()-> new EntityNotFoundException("Turma não encontrado"));
 
-    return this.repository.save(turmaFactory);
+    turma.atualizaNomeTurma(nome);
+    turma.atualizaDataInicioFim(data_inicio,data_final);
+    turma.atualizarHorario(horario);
+    turma.atualizarSala(sala);
+    turma.atualizarStatus(status);
+
+    return this.repository.save(turma);
   }
-  @Transactional
-  public void deleteTurma(Long id) throws Exception{
-    Turma turma = this.repository.findById(id).orElseThrow(()-> new Exception("Curso não encontrado"));
-    turma.deleteTurma();
 
-    this.repository.save(turma);
+  @Transactional
+  public Turma deleteTurma(Long id){
+    Turma turma = repository.findById(id)
+            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
+    turma.excluir();
+    repository.save(turma);
+    return turma;
   }
 }
