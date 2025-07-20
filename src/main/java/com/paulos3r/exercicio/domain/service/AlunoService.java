@@ -43,7 +43,8 @@ public class AlunoService {
   @Transactional
   public Aluno createAluno(Long pessoaId, Status alunoEspecial, Status status){
 
-    Pessoa pessoa = this.pessoaService.findPessoaById(pessoaId);
+    Pessoa pessoa = this.pessoaService.findPessoaById(pessoaId)
+            .orElseThrow( ()-> new EntityNotFoundException("Pessoa não foi encontrada para vincular ao aluno"));
 
     Aluno aluno = alunoFactory.createAluno(pessoa, alunoEspecial ,status );
 

@@ -23,7 +23,7 @@ public class TokenService {
       return JWT.create()
               .withIssuer("exercicio")
               .withSubject(usuario.getUsername())
-              .withExpiresAt(expiracao(30))
+              .withExpiresAt(expiracao(200))
               .sign(algorithm);
     } catch (JWTCreationException exception){
       throw new RegraDeNegocioException("Erro ao Criar token JWT de acesso");
@@ -35,7 +35,7 @@ public class TokenService {
       return JWT.create()
               .withIssuer("exercicio")
               .withSubject(usuario.getId().toString())
-              .withExpiresAt(expiracao(120))
+              .withExpiresAt(expiracao(400))
               .sign(algorithm);
     } catch (JWTCreationException exception){
       throw new Exception("Erro ao no refresh do token token JWT de acesso");

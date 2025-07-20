@@ -67,7 +67,7 @@ public class Pessoa {
   }
 
   /**
-   * Construtor para carregar um aluno existente pelo ( id )
+   * Construtor para carregar um Pessoa existente pelo ( id )
    * @param id
    * @param nome
    * @param cpf
@@ -97,7 +97,16 @@ public class Pessoa {
     this.telefone = telefone;
   }
 
-  public Pessoa(String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone) {
+  /**
+   * Construtor utilizado pela Factory
+   *
+   * @param nome
+   * @param cpf
+   * @param data_nascimento
+   * @param endereco
+   * @param telefone
+   */
+  public Pessoa(String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone, Usuario usuario) {
     if (cpf == null || !cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
       throw new IllegalArgumentException("Cpf no padrão incorreto!");
     }
@@ -106,82 +115,80 @@ public class Pessoa {
     this.data_nascimento = data_nascimento;
     this.endereco = endereco;
     this.telefone = telefone;
-  }
-
-  public Pessoa(PessoaDTO pessoaDTO, Usuario usuario){
-
-    this.nome = pessoaDTO.nome();
-    this.cpf = pessoaDTO.cpf();
-    this.data_nascimento = pessoaDTO.data_nascimento();
-    this.endereco = pessoaDTO.endereco();
-    this.telefone = pessoaDTO.telefone();
     this.usuario = usuario;
   }
 
-  public void atualizarPessoa(PessoaDTO pessoaDTO){
-    this.setCpf(pessoaDTO.cpf());
-    this.setNome(pessoaDTO.nome());
-    this.setData_nascimento(pessoaDTO.data_nascimento());
-    this.setEndereco(pessoaDTO.endereco());
-    this.setTelefone(pessoaDTO.telefone());
+  public void atualizarPessoaNome(String nome){
+    if (nome == null || nome.trim().isEmpty()){
+      throw new IllegalArgumentException("Nome não pode ser nulo ou em branco");
+    }
+    this.nome = nome;
+  }
+
+  public void atualizarPessoaCpf(String cpf){
+    if (cpf==null || cpf.trim().isEmpty()){
+      throw new IllegalArgumentException("Cpf não pode ser nulo ou vazio");
+    }
+    if (cpf == null || !cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
+      throw new IllegalArgumentException("Cpf no padrão incorreto!");
+    }
+    this.cpf = cpf;
+  }
+
+  public void atualizarDataNascimento(LocalDate data_nascimento){
+    if (data_nascimento == null ) {
+      throw new IllegalArgumentException("Data de nescimento não pode ser nulo ou vazio");
+    }
+  }
+
+  public void atualizarEndereco(String endereco){
+    if (endereco == null){
+      throw new IllegalArgumentException("Endereco não pode ser nulo ou vazio");
+    }
+    this.endereco = endereco;
+  }
+
+  public void atualizarTelefone(String telefone){
+    if (telefone == null){
+      throw new IllegalArgumentException("Telefone não pode ser nulo ou vazio");
+    }
+    this.telefone = telefone;
+  }
+
+  public void atualizarUsuario(Usuario usuario){
+    if (usuario == null){
+      throw new IllegalArgumentException("Usuario não pode ser nulo");
+    }
+    this.usuario=usuario;
   }
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   public String getNome() {
     return nome;
-  }
-
-  public void setNome(String nome) {
-    this.nome = nome;
   }
 
   public String getCpf() {
     return cpf;
   }
 
-  public void setCpf(String cpf) {
-    this.cpf = cpf;
-  }
-
   public LocalDate getData_nascimento() {
     return data_nascimento;
-  }
-
-  public void setData_nascimento(LocalDate data_nascimento) {
-    this.data_nascimento = data_nascimento;
   }
 
   public String getEndereco() {
     return endereco;
   }
 
-  public void setEndereco(String endereco) {
-    this.endereco = endereco;
-  }
-
   public String getTelefone() {
     return telefone;
-  }
-
-  public void setTelefone(String telefone) {
-    this.telefone = telefone;
   }
 
   public Usuario getUsuario() {
     return usuario;
   }
-
-  public void setUsuario(Usuario usuario) {
-    this.usuario = usuario;
-  }
-
 
   @Override
   public boolean equals(Object o) {

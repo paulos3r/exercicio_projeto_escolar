@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.domain.service;
 
+import com.paulos3r.exercicio.domain.model.Pessoa;
 import com.paulos3r.exercicio.domain.model.gateways.DocenteFactory;
 import com.paulos3r.exercicio.domain.model.gateways.PessoaFactory;
 import com.paulos3r.exercicio.infrastructure.dto.DocenteDTO;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DocenteService {
@@ -58,7 +60,8 @@ public class DocenteService {
   @Transactional
   public Docente saveDocente(Long pessoaId, LocalDate data_contratacao){
 
-    var pessoa = pessoaService.findPessoaById(pessoaId);
+    Pessoa pessoa = pessoaService.findPessoaById(pessoaId)
+            .orElseThrow(()-> new EntityNotFoundException("Não foi encontrado o cadastro do da Pessoa para vincular no Docente!"));
 
     var docente = docenteFactory.createDocente(pessoa, data_contratacao);
 
@@ -79,7 +82,8 @@ public class DocenteService {
     Docente docente = this.repository.findById(docenteId)
             .orElseThrow(()-> new EntityNotFoundException("Docente não foi encontrado pelo ID: " + docenteId));
 
-    var pessoa = this.pessoaService.findPessoaById(pessoaId);
+    var pessoa = this.pessoaService.findPessoaById(pessoaId)
+            .orElseThrow(()-> new EntityNotFoundException("Não foi encontrado cadastro da Pessoa para atualizar o docente!"));
 
     docente.vincularPessoaAoDocente(pessoa);
     docente.atualizarDataContratacao(data_contratacao);

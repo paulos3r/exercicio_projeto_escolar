@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                       req.requestMatchers(HttpMethod.GET, "/cursos").permitAll();
                       req.requestMatchers(
                               "/v2/api-docs",
-                              "/v3/api-docs",
+                              "/v3/**",
                               "/swagger-resources/**",
                               "/swagger-ui/**",
                               "/webjars/**",
