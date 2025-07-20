@@ -90,23 +90,19 @@ public class PessoaService {
    * @param data_nascimento
    * @param endereco
    * @param telefone
-   * @param usuarioID
    * @return Pessoa
    */
   @Transactional
-  public Pessoa updatePessoa(Long id, String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone,Long usuarioID ){
+  public Pessoa updatePessoa(Long id, String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone ){
 
     Pessoa pessoa = this.repository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Não encontrado"));
-
-    Usuario usuario = usuarioService.findUsuarioById(usuarioID);
 
     pessoa.atualizarPessoaNome(nome);
     pessoa.atualizarPessoaCpf(cpf);
     pessoa.atualizarDataNascimento(data_nascimento);
     pessoa.atualizarEndereco(endereco);
     pessoa.atualizarTelefone(telefone);
-    pessoa.atualizarUsuario(usuario);
 
     return this.repository.save(pessoa);
   }

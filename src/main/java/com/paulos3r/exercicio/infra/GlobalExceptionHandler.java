@@ -1,8 +1,10 @@
 package com.paulos3r.exercicio.infra;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -37,6 +40,20 @@ public class GlobalExceptionHandler {
     logger.warn("Erro de validação de requisição: {}", errorMessage);
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessage));
   }
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ErrorResponse> handleTypeMismatchException(MethodArgumentTypeMismatchException ex, WebRequest request) {
+    String parameterName = ex.getName(); // Nome do parâmetro (ex: "id")
+    String requiredType = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "desconhecido"; // Tipo esperado (ex: "Long")
+    String actualValue = ex.getValue() != null ? ex.getValue().toString() : "nulo"; // Valor recebido (ex: "abc")
+
+    String errorMessage = String.format(
+            "O valor '%s' fornecido para o parâmetro '%s' é inválido. Tipo esperado: %s.",
+            actualValue, parameterName, requiredType
+    );
+
+    logger.warn("Erro de incompatibilidade de tipo (400 - Bad Request): {}", errorMessage, ex);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errorMessage));
+  }
 
   // 2. Trata erros de requisição malformada (JSON inválido, tipos incorretos)
   @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -51,10 +68,39 @@ public class GlobalExceptionHandler {
 
   // 3. Trata erros de dados inválidos ou recursos não encontrados (do serviço)
   // Ex: CPF já existe, usuário vinculado, recurso referenciado não encontrado.
-  @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class, EntityNotFoundException.class})
+  // Ex: Duplicidade de chaves, chaves null e integridade
+  @ExceptionHandler({
+          IllegalArgumentException.class,
+          NoSuchElementException.class,
+          EntityNotFoundException.class,
+          DataIntegrityViolationException.class,
+          ConstraintViolationException.class
+  })
   public ResponseEntity<ErrorResponse> handleBadRequestExceptions(Exception ex, WebRequest request) {
-    logger.warn("Erro de requisição de negócio (400 - Bad Request): {}", ex.getMessage(), ex);
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage()));
+    String message = ex.getMessage();
+
+    if (ex instanceof DataIntegrityViolationException) {
+      // Lógica para personalizar mensagem de DataIntegrityViolationException
+      if (message != null && message.contains("Duplicate entry")) {
+        message = "Violação de unicidade: Um registo com dados semelhantes já existe.";
+        // Opcional: adicionar mais detalhes da chave duplicada se quiser expor
+      } else if (message != null && message.contains("cannot be null")) {
+        message = "Violação de integridade: Um campo obrigatório não foi fornecido.";
+      } else {
+        message = "Erro de integridade de dados."; // Mensagem mais genérica para outros casos
+      }
+    } else if (ex instanceof ConstraintViolationException) {
+      // Para ConstraintViolationException, você pode querer listar todas as violações
+      // O getMessage() já costuma ser descritivo, mas pode ser melhorado
+      message = "Erro de validação de dados: " + ((ConstraintViolationException) ex).getConstraintViolations().stream()
+              .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+              .collect(Collectors.joining("; "));
+    }
+    // Para IllegalArgumentException, NoSuchElementException, EntityNotFoundException,
+    // a mensagem da exceção já costuma ser adequada.
+
+    logger.warn("Erro de requisição (400 - Bad Request): {}", message, ex);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(message));
   }
 
   // 4. Trata exceções de regra de negócio personalizadas

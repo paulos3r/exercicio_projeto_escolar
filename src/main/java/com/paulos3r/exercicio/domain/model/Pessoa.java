@@ -107,7 +107,10 @@ public class Pessoa {
    * @param telefone
    */
   public Pessoa(String nome, String cpf, LocalDate data_nascimento, String endereco, String telefone, Usuario usuario) {
-    if (cpf == null || !cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
+    if (cpf == null) {
+      throw new IllegalArgumentException("Cpf não pode ser nulo!");
+    }
+    if (!cpf.matches("\\d{11}")) {
       throw new IllegalArgumentException("Cpf no padrão incorreto!");
     }
     this.nome = nome;
@@ -129,7 +132,7 @@ public class Pessoa {
     if (cpf==null || cpf.trim().isEmpty()){
       throw new IllegalArgumentException("Cpf não pode ser nulo ou vazio");
     }
-    if (cpf == null || !cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
+    if (!cpf.matches("\\d{11}")) {
       throw new IllegalArgumentException("Cpf no padrão incorreto!");
     }
     this.cpf = cpf;

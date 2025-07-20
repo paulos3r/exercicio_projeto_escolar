@@ -29,8 +29,8 @@ public class PessoaFactory {
         if (nome.isEmpty()){
             throw new IllegalArgumentException("Nome não pode ser nulo");
         }
-        if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
-            throw new IllegalArgumentException("Cpf não esta no formato ###.###.###-## ou esta nulo! ");
+        if (!cpf.matches("\\d{11}")) {
+            throw new IllegalArgumentException("Cpf não esta no formato ###########! ");
         }
         if (usuario == null){
             throw new IllegalArgumentException("Usuario não pode ser nulo");
