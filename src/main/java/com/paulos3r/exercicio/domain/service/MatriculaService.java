@@ -47,7 +47,8 @@ public class MatriculaService {
 
   @Transactional
   public Matricula saveMatricula(Long alunoId, Long turmaId){
-    Aluno aluno = alunoService.findAlunoById(alunoId);
+    Aluno aluno = alunoService.findAlunoById(alunoId)
+            .orElseThrow(()->new EntityNotFoundException("Aluno não encontrado com o ID: " + alunoId));
     Turma turma = turmaService.findTurmaById(turmaId);
 
     LocalDateTime dataMatricula = LocalDateTime.now();
@@ -62,7 +63,8 @@ public class MatriculaService {
     Matricula matricula =  repository.findById(id)
             .orElseThrow(()->new EntityNotFoundException("Matricula não encontrada"));
 
-    Aluno aluno = alunoService.findAlunoById(alunoId);
+    Aluno aluno = alunoService.findAlunoById(alunoId)
+            .orElseThrow(()->new EntityNotFoundException("Aluno não encontrado com o ID: " + alunoId));
     Turma turma = turmaService.findTurmaById(turmaId);
 
     matricula.alterarVinculoDeMatriculaAluno(aluno);

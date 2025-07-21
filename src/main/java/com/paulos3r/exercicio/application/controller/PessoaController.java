@@ -8,7 +8,6 @@ import com.paulos3r.exercicio.infrastructure.dto.PessoaDTO;
 import com.paulos3r.exercicio.infrastructure.dto.hateoas.PessoaResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;

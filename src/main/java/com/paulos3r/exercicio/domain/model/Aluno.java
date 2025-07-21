@@ -116,6 +116,10 @@ public class Aluno {
     this.pessoa_id=pessoa;
   }
 
+  public void excluir(){
+    this.status = Status.EXCLUIDO;
+  }
+
 
   public Long getId() {
     return id;
