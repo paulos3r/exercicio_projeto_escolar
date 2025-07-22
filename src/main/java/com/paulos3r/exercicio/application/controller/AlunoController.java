@@ -35,7 +35,7 @@ public class AlunoController {
 
   @PostMapping
   public ResponseEntity<Object> postAluno(@RequestBody AlunoDTO alunoDTO, @AuthenticationPrincipal Usuario usuario){
-    try{
+    try {
 
       Aluno aluno = alunoService.createAluno(
               alunoDTO.pessoa_id(),
@@ -52,9 +52,10 @@ public class AlunoController {
               )
 
       );
-
+    } catch (EntityNotFoundException e ){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     } catch (IllegalArgumentException | NoSuchElementException e) {
-      return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     } catch (Exception e) {
       System.out.println(  "Erro interno : " + e.getMessage());
       e.printStackTrace();
@@ -125,8 +126,11 @@ public class AlunoController {
       );
     } catch (IllegalArgumentException e) { // Se o ID não existir ou o Status for inválido
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    } catch (EntityNotFoundException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     } catch (Exception e) {
       System.out.println("Erro interno: " + e.getMessage());
+      e.printStackTrace();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
@@ -182,7 +186,7 @@ public class AlunoController {
   public ResponseEntity<Object> deleteAluno(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
     try{
       this.alunoService.deleteAlunoById(id);
-      return  ResponseEntity.status(HttpStatus.OK).build();
+      return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     } catch (IllegalArgumentException |
             NoSuchElementException |
             DataIntegrityViolationException |

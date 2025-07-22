@@ -4,6 +4,7 @@ import com.paulos3r.exercicio.domain.model.Aluno;
 import com.paulos3r.exercicio.domain.model.Pessoa;
 import com.paulos3r.exercicio.domain.model.Status;
 import com.paulos3r.exercicio.domain.model.gateways.AlunoFactory;
+import com.paulos3r.exercicio.domain.model.gateways.MatriculaFactory;
 import com.paulos3r.exercicio.infrastructure.repository.AlunoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -15,6 +16,8 @@ import java.util.Optional;
 
 @Service
 public class AlunoService {
+  private final List<String> STATUS_ESPECIAL = List.of("NORMAL", "ESPECIAL");
+  private final List<String>  STATUS = List.of("ATIVO", "CURSANDO", "INATIVO", "EVADIDO");
 
   @Autowired
   private final PessoaService pessoaService;
@@ -25,10 +28,14 @@ public class AlunoService {
   @Autowired
   private final AlunoFactory alunoFactory;
 
-  public AlunoService(PessoaService pessoaService, AlunoRepository alunoRepository, AlunoFactory alunoFactory){
+  @Autowired
+  private final MatriculaFactory matriculaFactory;
+
+  public AlunoService(PessoaService pessoaService, AlunoRepository alunoRepository, AlunoFactory alunoFactory, MatriculaFactory matriculaFactory){
     this.pessoaService = pessoaService;
     this.alunoRepository = alunoRepository;
     this.alunoFactory = alunoFactory;
+    this.matriculaFactory = matriculaFactory;
   }
 
   public Optional<Aluno> findAlunoById(Long id) {
@@ -45,6 +52,20 @@ public class AlunoService {
     Pessoa pessoa = this.pessoaService.findPessoaById(pessoaId)
             .orElseThrow( ()-> new EntityNotFoundException("Pessoa não foi encontrada para vincular ao aluno"));
 
+
+
+    if (pessoa != null){
+      throw new IllegalArgumentException("Aluno já tem cadastro");
+    }
+    if (!STATUS_ESPECIAL.contains(alunoEspecial.trim().toUpperCase())){
+      throw new IllegalArgumentException("status de aluno especial não existe " + alunoEspecial);
+    }
+    if (!STATUS.contains(status.trim().toUpperCase())){
+      throw new IllegalArgumentException("status do aluno não existe " + status);
+    }
+
+
+
     Status isAlunoEspecial = Status.valueOf( alunoEspecial.trim().toUpperCase() );
     Status isStatus = Status.valueOf( status.trim().toUpperCase());
 
@@ -60,6 +81,14 @@ public class AlunoService {
 
     Aluno aluno =  alunoRepository.findById(alunoId)
             .orElseThrow(()-> new EntityNotFoundException("Aluno não encontrado com o ID : " + alunoId));
+
+
+    if (!STATUS_ESPECIAL.contains(alunoEspecial.trim().toUpperCase())){
+      throw new IllegalArgumentException("status de aluno especial não existe" + alunoEspecial);
+    }
+    if (!STATUS.contains(status.trim().toUpperCase())){
+      throw new IllegalArgumentException("status de aluno especial não existe" + alunoEspecial);
+    }
 
     Status isAlunoEspecial = Status.valueOf( alunoEspecial.trim().toUpperCase() );
     Status isStatus = Status.valueOf( status.trim().toUpperCase());

@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.domain.model;
 
-import com.paulos3r.exercicio.infrastructure.dto.PessoaDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -18,6 +17,7 @@ public class Pessoa {
   @Column(unique = true, length = 14)
   private String cpf;
   private LocalDate data_nascimento;
+  @Column(length = 255)
   private String endereco;
   @Column(length = 15)
   private String telefone;
@@ -54,7 +54,11 @@ public class Pessoa {
       throw new IllegalArgumentException("Usuario não pode ser nulo");
     }
 
-    if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
+    if (LocalDate.now().isBefore(data_nascimento)){
+      throw new IllegalArgumentException("data de nescimento tem que ser no passado!");
+    }
+
+    if (!cpf.matches("\\d{11}")) {
       throw new IllegalArgumentException("Cpf não esta no formato ###.###.###-## ou esta nulo! ");
     }
     this.id = id;
@@ -86,8 +90,12 @@ public class Pessoa {
       throw new IllegalArgumentException("Nome não pode ser nulo");
     }
 
-    if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")) {
+    if (!cpf.matches("\\d{11}")) {
       throw new IllegalArgumentException("Cpf não esta no formato ###.###.###-## ou esta nulo! ");
+    }
+
+    if (LocalDate.now().isBefore(data_nascimento)){
+      throw new IllegalArgumentException("data de nescimento tem que ser no passado!");
     }
     this.id = id;
     this.nome = nome;
@@ -113,6 +121,11 @@ public class Pessoa {
     if (!cpf.matches("\\d{11}")) {
       throw new IllegalArgumentException("Cpf no padrão incorreto!");
     }
+
+    if (LocalDate.now().isBefore(data_nascimento)){
+      throw new IllegalArgumentException("data de nescimento tem que ser no passado!");
+    }
+
     this.nome = nome;
     this.cpf = cpf;
     this.data_nascimento = data_nascimento;
@@ -142,6 +155,10 @@ public class Pessoa {
     if (data_nascimento == null ) {
       throw new IllegalArgumentException("Data de nescimento não pode ser nulo ou vazio");
     }
+    if (LocalDate.now().isBefore(data_nascimento)){
+      throw new IllegalArgumentException("data de nescimento tem que ser no passado!");
+    }
+    this.data_nascimento = data_nascimento;
   }
 
   public void atualizarEndereco(String endereco){
@@ -156,13 +173,6 @@ public class Pessoa {
       throw new IllegalArgumentException("Telefone não pode ser nulo ou vazio");
     }
     this.telefone = telefone;
-  }
-
-  public void atualizarUsuario(Usuario usuario){
-    if (usuario == null){
-      throw new IllegalArgumentException("Usuario não pode ser nulo");
-    }
-    this.usuario=usuario;
   }
 
   public Long getId() {

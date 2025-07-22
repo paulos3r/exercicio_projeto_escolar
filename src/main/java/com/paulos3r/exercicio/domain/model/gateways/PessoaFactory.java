@@ -35,6 +35,12 @@ public class PessoaFactory {
         if (usuario == null){
             throw new IllegalArgumentException("Usuario não pode ser nulo");
         }
+        if (data_nascimento == null ){
+            throw new IllegalArgumentException("Data de nescimento não pode ser nulo");
+        }
+        if (LocalDate.now().isBefore(data_nascimento)){
+            throw new IllegalArgumentException("data de nescimento tem que ser no passado!");
+        }
         return new Pessoa(nome, cpf, data_nascimento, endereco, telefone,usuario);
     }
 }

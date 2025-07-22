@@ -98,6 +98,10 @@ public class PessoaService {
     Pessoa pessoa = this.repository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Não encontrado"));
 
+    if (repository.existsByCpf(cpf) ){
+      throw new IllegalArgumentException("CPF já existe na base de dados, favor verificar.");
+    }
+
     pessoa.atualizarPessoaNome(nome);
     pessoa.atualizarPessoaCpf(cpf);
     pessoa.atualizarDataNascimento(data_nascimento);
@@ -115,6 +119,6 @@ public class PessoaService {
   @Transactional
   public void deletePessoa(Long id){
     this.repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cadastro não encontrado"));
-    this.repository.deleteById(id);
+    //this.repository.deleteById(id);
   }
 }

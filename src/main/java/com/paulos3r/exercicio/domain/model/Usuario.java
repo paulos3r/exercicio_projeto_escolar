@@ -16,6 +16,7 @@ public class Usuario implements UserDetails{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  @Column(length = 100)
   private String username;
   private String password;
   @Column(length = 100)
@@ -36,6 +37,17 @@ public class Usuario implements UserDetails{
   public Usuario() {
   }
 
+  /**
+   *
+   * @param id
+   * @param username
+   * @param password
+   * @param email
+   * @param roles
+   * @param verificado
+   * @param token
+   * @param expiracaoToken
+   */
   public Usuario(Long id, String username, String password, String email, List<Perfil> roles, Boolean verificado, String token, LocalDateTime expiracaoToken) {
     this.id = id;
     this.username = username;
@@ -47,6 +59,34 @@ public class Usuario implements UserDetails{
     this.expiracaoToken = expiracaoToken;
   }
 
+  public Usuario(String username, String password, String confirmacaoPassword, String email) {
+
+    if (!password.equals(confirmacaoPassword)){
+      throw new IllegalArgumentException("Criação de usuario falhou devido a senha incorreta");
+    }
+    if (email==null || email.trim().isEmpty()){
+      throw new IllegalArgumentException("Criação de usuario falhou, favor informar o email");
+    }
+
+    if (password == null ||
+            password.trim().isEmpty() ||
+            confirmacaoPassword == null ||
+            confirmacaoPassword.trim().isEmpty()
+    ){
+      throw new IllegalArgumentException("Criação de usuario falhou devido senha incorreta");
+    }
+
+    this.username = username;
+    this.password = password;
+    this.email = email;
+  }
+
+  /**
+   *
+   * @param usuarioDTO
+   * @param senhaCriptografada
+   * @param perfil
+   */
   public Usuario(UsuarioDTO usuarioDTO, String senhaCriptografada, Perfil perfil){
     this.setUsername(usuarioDTO.username());
     this.setPassword(senhaCriptografada);
