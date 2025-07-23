@@ -1,11 +1,11 @@
 package com.paulos3r.exercicio.application.controller;
 
+import com.paulos3r.exercicio.domain.model.Usuario;
+import com.paulos3r.exercicio.domain.service.TokenService;
 import com.paulos3r.exercicio.infrastructure.dto.AutenticacaoDTO;
 import com.paulos3r.exercicio.infrastructure.dto.TokenDTO;
 import com.paulos3r.exercicio.infrastructure.dto.TokenRefreshDTO;
-import com.paulos3r.exercicio.domain.model.Usuario;
 import com.paulos3r.exercicio.infrastructure.repository.UsuarioRepository;
-import com.paulos3r.exercicio.domain.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

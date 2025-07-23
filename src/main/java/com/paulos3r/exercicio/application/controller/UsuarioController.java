@@ -1,10 +1,10 @@
 package com.paulos3r.exercicio.application.controller;
 
+import com.paulos3r.exercicio.domain.model.Usuario;
+import com.paulos3r.exercicio.domain.service.UsuarioService;
 import com.paulos3r.exercicio.infrastructure.dto.PerfilDTO;
 import com.paulos3r.exercicio.infrastructure.dto.UsuarioDTO;
 import com.paulos3r.exercicio.infrastructure.dto.UsuarioListagemDTO;
-import com.paulos3r.exercicio.domain.model.Usuario;
-import com.paulos3r.exercicio.domain.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

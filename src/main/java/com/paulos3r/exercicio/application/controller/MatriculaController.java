@@ -1,17 +1,15 @@
 package com.paulos3r.exercicio.application.controller;
 
 import com.paulos3r.exercicio.domain.service.AlunoService;
+import com.paulos3r.exercicio.domain.service.MatriculaService;
 import com.paulos3r.exercicio.domain.service.TurmaService;
 import com.paulos3r.exercicio.infrastructure.dto.MatriculaDTO;
-import com.paulos3r.exercicio.domain.model.Matricula;
-import com.paulos3r.exercicio.domain.service.MatriculaService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

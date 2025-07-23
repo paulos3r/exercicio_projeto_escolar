@@ -1,10 +1,10 @@
 package com.paulos3r.exercicio.application.controller;
 
+import com.paulos3r.exercicio.domain.model.Ministrante;
 import com.paulos3r.exercicio.domain.service.DisciplinaService;
 import com.paulos3r.exercicio.domain.service.DocenteService;
-import com.paulos3r.exercicio.infrastructure.dto.MinistranteDTO;
-import com.paulos3r.exercicio.domain.model.Ministrante;
 import com.paulos3r.exercicio.domain.service.MinistranteService;
+import com.paulos3r.exercicio.infrastructure.dto.MinistranteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

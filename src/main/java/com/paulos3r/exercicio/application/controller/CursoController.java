@@ -1,11 +1,10 @@
 package com.paulos3r.exercicio.application.controller;
 
 import com.paulos3r.exercicio.domain.model.Categoria;
-import com.paulos3r.exercicio.domain.model.Status;
-import com.paulos3r.exercicio.infrastructure.dto.AlunoDTO;
-import com.paulos3r.exercicio.infrastructure.dto.CursoDTO;
 import com.paulos3r.exercicio.domain.model.Curso;
+import com.paulos3r.exercicio.domain.model.Status;
 import com.paulos3r.exercicio.domain.service.CursoService;
+import com.paulos3r.exercicio.infrastructure.dto.CursoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

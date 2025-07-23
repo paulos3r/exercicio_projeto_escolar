@@ -89,7 +89,7 @@ public class AlunoController {
   public ResponseEntity<Object> getAlunoById(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario){
     try{
       Aluno aluno = alunoService.findAlunoById(id)
-              .orElseThrow(() -> new EntityNotFoundException("Não tem um cadastro para a pessoa de ID : " + id));
+              .orElseThrow(() -> new EntityNotFoundException("Não tem um cadastro para a pessoa de ID: " + id));
 
       return ResponseEntity.ok().body(new AlunoDTO(
               aluno.getId(),
@@ -97,10 +97,12 @@ public class AlunoController {
               aluno.getAluno_especial().name(),
               aluno.getStatus().name()
       ));
-    } catch (IllegalArgumentException e){
-      return ResponseEntity.notFound().build();
+    } catch (DataIntegrityViolationException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     } catch (Exception e){
-      System.out.println("Erro onterno : " + e.getMessage());
+      System.out.println("Erro interno: " + e.getMessage());
       e.printStackTrace();
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -124,7 +126,7 @@ public class AlunoController {
                       aluno.getStatus().toString()
               )
       );
-    } catch (IllegalArgumentException e) { // Se o ID não existir ou o Status for inválido
+    } catch (IllegalArgumentException | DataIntegrityViolationException e) { // Se o ID não existir ou o Status for inválido
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     } catch (EntityNotFoundException e){
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));

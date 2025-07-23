@@ -2,7 +2,6 @@ package com.paulos3r.exercicio.application.controller;
 
 import com.paulos3r.exercicio.domain.model.Docente;
 import com.paulos3r.exercicio.domain.service.DocenteService;
-import com.paulos3r.exercicio.domain.service.PessoaService;
 import com.paulos3r.exercicio.infrastructure.dto.DocenteDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
