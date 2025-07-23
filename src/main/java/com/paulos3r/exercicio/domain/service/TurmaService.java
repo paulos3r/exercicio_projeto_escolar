@@ -42,7 +42,8 @@ public class TurmaService {
   @Transactional
   public Turma saveTurma(Long cursoId, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status) {
 
-    Curso curso = cursoService.findCursoById(cursoId);
+    Curso curso = cursoService.findCursoById(cursoId)
+            .orElseThrow(()-> new EntityNotFoundException("Curso não foi encontrado pelo ID: " + cursoId));
 
     Turma turma = turmaFactory.createTurma(curso,nome,data_inicio,data_final,horario,sala,status);
 

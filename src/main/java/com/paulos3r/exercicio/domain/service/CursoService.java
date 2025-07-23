@@ -12,9 +12,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CursoService {
+
+  private final List<String> CATEGORIA = List.of("APERFEICOAMENTO","CAPACITACAO","OFICINA","TREINAMENTO");
+  private final List<String> STATUS = List.of("ATIVO","CONCLUIDO","EXCLUIDO");
 
   @Autowired
   private final CursoRepository cursoRepository;
@@ -28,9 +32,8 @@ public class CursoService {
     this.cursoFactory = cursoFactory;
   }
 
-  public Curso findCursoById(Long id){
-    return cursoRepository.findById(id)
-            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
+  public Optional<Curso> findCursoById(Long id){
+    return cursoRepository.findById(id);
   }
 
   public List<Curso> findAllCurso(){
@@ -38,18 +41,38 @@ public class CursoService {
   }
 
   @Transactional
-  public Curso saveCurso(String nome, Categoria categoria, LocalDateTime dataCriacao, Status status){
-    var cursoFactory = new CursoFactory().createCurso(nome, categoria, dataCriacao, status) ;
-    cursoRepository.save(cursoFactory);
-    return cursoFactory;
+  public Curso saveCurso(String nome, String categoria, String status){
+
+    if (!CATEGORIA.contains(categoria.trim().toUpperCase())){
+      throw new IllegalArgumentException("Categoria não existe: " + categoria);
+    }
+    if (!STATUS.contains(status.trim().toUpperCase())){
+      throw new IllegalArgumentException("Status não existe: " + status);
+    }
+    Categoria isCategoria = Categoria.valueOf( categoria.trim().toUpperCase() );
+    Status isStatus = Status.valueOf( status.trim().toUpperCase() );
+
+    LocalDateTime dataCriacao = LocalDateTime.now();
+
+    var curso = cursoFactory.createCurso(nome, isCategoria, dataCriacao, isStatus);
+
+    cursoRepository.save(curso);
+
+    return curso;
   }
 
   @Transactional
-  public Curso updateCurso(Long cursoId, String nome, Status status){
-    Curso curso = cursoRepository.findById(cursoId)
-            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
+  public Curso updateCurso(Long cursoId, String nome, String status){
 
-    curso.atualizarStatus(status);
+    Curso curso = cursoRepository.findById(cursoId).orElseThrow(()-> new EntityNotFoundException("Curso não encontrado ID: "+ cursoId));
+
+    if (!STATUS.contains(status.trim().toUpperCase())){
+      throw new IllegalArgumentException("Status não existe: " + status);
+    }
+
+    Status isStatus = Status.valueOf( status.trim().toUpperCase() );
+
+    curso.atualizarStatus(isStatus);
     curso.atualizarNome(nome);
 
     return cursoRepository.save(curso);
@@ -57,7 +80,7 @@ public class CursoService {
   @Transactional
   public void deleteCurso(Long id){
     Curso curso = cursoRepository.findById(id)
-            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado"));
+            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado ID: "+ id));
 
     curso.excluir();
 
