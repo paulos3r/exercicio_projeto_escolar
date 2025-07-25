@@ -89,7 +89,7 @@ public class CursoController {
   public ResponseEntity<Object> updateCurso(@PathVariable Long id, @RequestBody CursoDTO cursoDTO, @AuthenticationPrincipal Usuario usuario){
     try {
 
-      Curso curso = cursoService.updateCurso(id, cursoDTO.nome(), cursoDTO.status());
+      Curso curso = cursoService.updateCurso(id, cursoDTO.nome(), cursoDTO.status(), cursoDTO.categoria_id());
 
       return ResponseEntity.status(HttpStatus.OK).body(
               new CursoDTO(

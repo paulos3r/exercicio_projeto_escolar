@@ -119,13 +119,20 @@ public class Curso {
    */
   public void atualizarNome(String nome) {
     if (nome == null || nome.trim().isEmpty()) {
-      throw new IllegalArgumentException("O novo status não pode ser nulo.");
+      throw new IllegalArgumentException("O novo nome não pode ser nulo.");
     }
     this.nome = nome;
   }
 
+  public void atulizaCategoria(Categoria categoria){
+    if (categoria == null ){
+      throw new IllegalArgumentException("A Categoria não pode ser nulo");
+    }
+    this.categoria_id = categoria;
+  }
+
   public void excluir(){
-    this.status = Status.CONCLUIDO;
+    this.status = Status.EXCLUIDO;
   }
 
   @Override

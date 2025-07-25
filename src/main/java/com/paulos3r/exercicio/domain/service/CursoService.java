@@ -17,9 +17,6 @@ import java.util.Optional;
 @Service
 public class CursoService {
 
-  private final List<String> CATEGORIA = List.of("APERFEICOAMENTO","CAPACITACAO","OFICINA","TREINAMENTO");
-  private final List<String> STATUS = List.of("ATIVO","CONCLUIDO","EXCLUIDO");
-
   @Autowired
   private final CursoRepository cursoRepository;
 
@@ -43,12 +40,6 @@ public class CursoService {
   @Transactional
   public Curso saveCurso(String nome, String categoria, String status){
 
-    if (!CATEGORIA.contains(categoria.trim().toUpperCase())){
-      throw new IllegalArgumentException("Categoria não existe: " + categoria);
-    }
-    if (!STATUS.contains(status.trim().toUpperCase())){
-      throw new IllegalArgumentException("Status não existe: " + status);
-    }
     Categoria isCategoria = Categoria.valueOf( categoria.trim().toUpperCase() );
     Status isStatus = Status.valueOf( status.trim().toUpperCase() );
 
@@ -62,21 +53,26 @@ public class CursoService {
   }
 
   @Transactional
-  public Curso updateCurso(Long cursoId, String nome, String status){
+  public Curso updateCurso(Long cursoId, String nome, String status, String categoria){
 
-    Curso curso = cursoRepository.findById(cursoId).orElseThrow(()-> new EntityNotFoundException("Curso não encontrado ID: "+ cursoId));
+    Curso curso = cursoRepository.findById(cursoId)
+            .orElseThrow(()-> new EntityNotFoundException("Curso não encontrado ID: "+ cursoId));
 
-    if (!STATUS.contains(status.trim().toUpperCase())){
-      throw new IllegalArgumentException("Status não existe: " + status);
+    if(nome!=null && !nome.isBlank()){
+      curso.atualizarNome(nome);
     }
-
-    Status isStatus = Status.valueOf( status.trim().toUpperCase() );
-
-    curso.atualizarStatus(isStatus);
-    curso.atualizarNome(nome);
+    if( status != null && !status.trim().isEmpty()){
+      Status isStatus = Status.valueOf( status.trim().toUpperCase() );
+      curso.atualizarStatus(isStatus);
+    }
+    if( categoria != null && !categoria.trim().isEmpty()){
+      Categoria isCategoria = Categoria.valueOf( categoria.trim().toUpperCase());
+      curso.atulizaCategoria(isCategoria);
+    }
 
     return cursoRepository.save(curso);
   }
+
   @Transactional
   public void deleteCurso(Long id){
     Curso curso = cursoRepository.findById(id)

@@ -8,7 +8,10 @@ public enum Categoria {
   APERFEICOAMENTO("Aperfeiçoamento Profissional"),
   CAPACITACAO("Capacitação Técnica"),
   OFICINA("Oficina Prática"),
-  TREINAMENTO("Treinamento Corporativo");
+  TREINAMENTO("Treinamento Corporativo"),
+  EDUCACAO_BASICA ("Escola e Colégios"),
+  INSTITUICAO_ENSINO("Faculdades, Centros Universitários, Universidades, Escolas e Colégios no Brasil"),
+  CURSO_MEC("regulatórios junto ao Ministério da Educação (MEC)");
 
   private final String descricao;
 
