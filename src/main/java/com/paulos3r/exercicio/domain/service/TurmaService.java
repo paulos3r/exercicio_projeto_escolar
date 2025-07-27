@@ -40,26 +40,35 @@ public class TurmaService {
   }
 
   @Transactional
-  public Turma saveTurma(Long cursoId, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status) {
+  public Turma saveTurma(Long cursoId, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, String status) {
 
     Curso curso = cursoService.findCursoById(cursoId)
             .orElseThrow(()-> new EntityNotFoundException("Curso não foi encontrado pelo ID: " + cursoId));
 
-    Turma turma = turmaFactory.createTurma(curso,nome,data_inicio,data_final,horario,sala,status);
+    if (status== null || status.isBlank()){
+      throw new IllegalArgumentException("Status não pode ser nulo");
+    }
+
+    Status isStatus = Status.valueOf( status.trim().toUpperCase() );
+
+    Turma turma = turmaFactory.createTurma(curso,nome,data_inicio,data_final,horario,sala,isStatus);
 
     return repository.save(turma);
   }
 
   @Transactional
-  public Turma updateTurma(Long turmaId, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, Status status ){
+  public Turma updateTurma(Long turmaId, String nome, LocalDate data_inicio, LocalDate data_final, String horario, String sala, String status ){
 
     Turma turma = repository.findById(turmaId).orElseThrow(()-> new EntityNotFoundException("Turma não encontrado"));
+
+    if ( status == null || status.isBlank() ){
+      turma.atualizarStatus(turma.getStatus());
+    }
 
     turma.atualizaNomeTurma(nome);
     turma.atualizaDataInicioFim(data_inicio,data_final);
     turma.atualizarHorario(horario);
     turma.atualizarSala(sala);
-    turma.atualizarStatus(status);
 
     return this.repository.save(turma);
   }

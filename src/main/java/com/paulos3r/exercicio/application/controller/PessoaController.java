@@ -67,10 +67,9 @@ public class PessoaController {
   }
 
   @GetMapping
-  public ResponseEntity<Object> getAllPessoa(){
-      List<Pessoa> pessoas = this.pessoaService.getAllPessoa();
+  public ResponseEntity<Object> getAllPessoa(@AuthenticationPrincipal Usuario usuario){
 
-      List<PessoaDTO> listaDTO = pessoas.stream()
+      List<PessoaDTO> listaDTO = this.pessoaService.getAllPessoa().stream()
               .map(pessoa -> new PessoaDTO(
                               pessoa.getId(),
                               pessoa.getNome(),
@@ -86,7 +85,7 @@ public class PessoaController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Object> getPessoaId(@PathVariable Long id){
+  public ResponseEntity<Object> getPessoaId(@PathVariable Long id,@AuthenticationPrincipal Usuario usuario){
     try {
 
       Pessoa pessoa = this.pessoaService.findPessoaById(id)
@@ -115,7 +114,7 @@ public class PessoaController {
   @PutMapping("/{id}")
   public ResponseEntity<Object> putPessoa(
           @PathVariable Long id,
-          @RequestBody PessoaDTO pessoaDTO,
+          @Valid @RequestBody PessoaDTO pessoaDTO,
           @AuthenticationPrincipal Usuario usuario
   ){
     try {
@@ -130,22 +129,17 @@ public class PessoaController {
 
       PessoaResponseDTO responseDTO = new PessoaResponseDTO(pessoa);
 
-      // 2. Adiciona os links HATEOAS ao DTO de resposta
-      // Link 'self' (GET para o recurso atualizado)
       responseDTO.add(WebMvcLinkBuilder.linkTo(
-              WebMvcLinkBuilder.methodOn(PessoaController.class).getPessoaId(pessoa.getId())
+              WebMvcLinkBuilder.methodOn(PessoaController.class).getPessoaId(pessoa.getId(),null)
       ).withSelfRel());
 
-      // Link 'update' (PUT para o recurso atualizado)
       responseDTO.add(WebMvcLinkBuilder.linkTo(
               WebMvcLinkBuilder.methodOn(PessoaController.class).putPessoa(pessoa.getId(), null, null) // null para DTO/Usuario, pois são parâmetros de requisição
       ).withRel("update").withType("PUT"));
 
-      // Link 'delete' (DELETE para o recurso atualizado)
       responseDTO.add(WebMvcLinkBuilder.linkTo(
               WebMvcLinkBuilder.methodOn(PessoaController.class).deletePessoa(pessoa.getId(), null)
       ).withRel("delete").withType("DELETE"));
-
 
       return ResponseEntity.status(HttpStatus.OK).body( responseDTO );
     } catch (EntityNotFoundException e ){
