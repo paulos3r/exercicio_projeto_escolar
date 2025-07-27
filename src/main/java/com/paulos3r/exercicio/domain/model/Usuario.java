@@ -62,10 +62,10 @@ public class Usuario implements UserDetails{
   public Usuario(String username, String password, String confirmacaoPassword, String email) {
 
     if (!password.equals(confirmacaoPassword)){
-      throw new IllegalArgumentException("Criação de usuario falhou devido a senha incorreta");
+      throw new IllegalArgumentException("Confirmação de senha invalida");
     }
     if (email==null || email.trim().isEmpty()){
-      throw new IllegalArgumentException("Criação de usuario falhou, favor informar o email");
+      throw new IllegalArgumentException("Criação de usuário falhou, favor informar o email");
     }
 
     if (password == null ||
@@ -73,7 +73,7 @@ public class Usuario implements UserDetails{
             confirmacaoPassword == null ||
             confirmacaoPassword.trim().isEmpty()
     ){
-      throw new IllegalArgumentException("Criação de usuario falhou devido senha incorreta");
+      throw new IllegalArgumentException("A senha não pode ser nulo ou em branco");
     }
 
     this.username = username;

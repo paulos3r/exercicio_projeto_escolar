@@ -11,6 +11,7 @@ public class UsuarioFactory {
           String password,
           String confirmacaoPassword,
           String email){
+
     return new Usuario(username,password,confirmacaoPassword,email);
   }
 }
