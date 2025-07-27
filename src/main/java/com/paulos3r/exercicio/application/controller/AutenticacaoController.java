@@ -7,6 +7,7 @@ import com.paulos3r.exercicio.infrastructure.dto.TokenDTO;
 import com.paulos3r.exercicio.infrastructure.dto.TokenRefreshDTO;
 import com.paulos3r.exercicio.infrastructure.repository.UsuarioRepository;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,27 +33,47 @@ public class AutenticacaoController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<TokenDTO> login(@Valid @RequestBody AutenticacaoDTO autenticacaoDTO) throws Exception {
-    var tokenAutenticacao =  new UsernamePasswordAuthenticationToken(autenticacaoDTO.username(), autenticacaoDTO.password());
-    var autenticacao = authenticationManager.authenticate(tokenAutenticacao);
+  public ResponseEntity<Object> login(@Valid @RequestBody AutenticacaoDTO autenticacaoDTO){
+    try {
 
-    String tokenAcesso = tokenService.token( (Usuario) autenticacao.getPrincipal());
+      var tokenAutenticacao =  new UsernamePasswordAuthenticationToken(autenticacaoDTO.username(), autenticacaoDTO.password());
+      var autenticacao = authenticationManager.authenticate(tokenAutenticacao);
 
-    String tokenRefresh = tokenService.RefreshToken((Usuario) autenticacao.getPrincipal());
+      String tokenAcesso = tokenService.token( (Usuario) autenticacao.getPrincipal());
 
-    return ResponseEntity.ok(new TokenDTO( tokenAcesso, tokenRefresh ) );
+      String tokenRefresh = tokenService.RefreshToken( (Usuario) autenticacao.getPrincipal());
+
+      return ResponseEntity.status(HttpStatus.OK).body(
+              new TokenDTO(
+                      tokenAcesso,
+                      tokenRefresh )
+      );
+
+    } catch (Exception e){
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
 
   @PostMapping("/atualizar")
-  public ResponseEntity<TokenDTO> atualizarToken( @Valid  @RequestBody TokenRefreshDTO tokenRefresh) throws Exception {
-    var token = tokenRefresh.tokenRefresh();
-    Long usuario_id = Long.valueOf( tokenService.verificarToken(token) );
-    var usuario = this.usuarioRepository.findById(usuario_id).orElseThrow();
+  public ResponseEntity<TokenDTO> atualizarToken( @Valid  @RequestBody TokenRefreshDTO tokenRefresh){
+    try {
+      var token = tokenRefresh.tokenRefresh();
 
-    String tokenAcesso = tokenService.token( usuario );
+      Long usuario_id = Long.valueOf( tokenService.verificarToken(token) );
 
-    String refreshToken = tokenService.RefreshToken( usuario );
+      var usuario = this.usuarioRepository.findById(usuario_id).orElseThrow();
 
-    return ResponseEntity.ok(new TokenDTO( tokenAcesso, refreshToken ) );
+      String tokenAcesso = tokenService.token( usuario );
+
+      String refreshToken = tokenService.RefreshToken( usuario );
+
+      return ResponseEntity.ok(new TokenDTO( tokenAcesso, refreshToken ) );
+    }catch (Exception e){
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
 }

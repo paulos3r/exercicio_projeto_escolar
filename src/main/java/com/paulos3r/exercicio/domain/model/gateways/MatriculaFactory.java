@@ -17,6 +17,9 @@ public class MatriculaFactory {
         if (turma==null){
             throw new IllegalArgumentException("Turma não pode ser nulo");
         }
+        if (data_matricula==null){
+            throw new IllegalArgumentException("Data de matricula não pode ser nulo");
+        }
 
         return new Matricula(aluno, turma, data_matricula);
     }

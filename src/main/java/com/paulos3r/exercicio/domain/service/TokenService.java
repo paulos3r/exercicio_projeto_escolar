@@ -47,15 +47,12 @@ public class TokenService {
     try {
       Algorithm algorithm = Algorithm.HMAC256("12345678");
       JWTVerifier verifier = JWT.require(algorithm)
-              // specify any specific claim validations
               .withIssuer("exercicio")
-              // reusable verifier instance
               .build();
 
       decodedJWT = verifier.verify(token);
       return decodedJWT.getSubject();
     } catch (JWTVerificationException exception){
-      // Invalid signature/claims
       throw new Exception("Erro ao verificar o token JWT de acesso" + exception.getMessage());
     }
   }

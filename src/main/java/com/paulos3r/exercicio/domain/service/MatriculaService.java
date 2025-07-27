@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MatriculaService {
@@ -40,9 +41,8 @@ public class MatriculaService {
     return repository.findAll().stream().toList();
   }
 
-  public Matricula findMatriculaById(Long id){
-    return repository.findById(id)
-            .orElseThrow(()->new EntityNotFoundException("Matricula não encontrada"));
+  public Optional<Matricula> findMatriculaById(Long id){
+    return repository.findById(id);
   }
 
   @Transactional
