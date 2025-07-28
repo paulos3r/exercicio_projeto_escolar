@@ -2,10 +2,14 @@ package com.paulos3r.exercicio.application.controller;
 
 import com.paulos3r.exercicio.domain.model.Usuario;
 import com.paulos3r.exercicio.domain.service.UsuarioService;
+import com.paulos3r.exercicio.infra.ErrorResponse;
 import com.paulos3r.exercicio.infrastructure.dto.PerfilDTO;
 import com.paulos3r.exercicio.infrastructure.dto.UsuarioDTO;
 import com.paulos3r.exercicio.infrastructure.dto.UsuarioListagemDTO;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +29,28 @@ public class UsuarioController {
   }
 
   @PostMapping("/registrar")
-  public ResponseEntity<Usuario> postUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO, UriComponentsBuilder uriComponentsBuilder){
-    var usuario  = usuarioService.saveUsuario(usuarioDTO);
-    URI uri = uriComponentsBuilder.path("/usuarios/{id}")
-            .buildAndExpand(usuario.getId())
-            .toUri();
-    return ResponseEntity.created(uri).body(usuario);
+  public ResponseEntity<Object> postUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO, UriComponentsBuilder uriComponentsBuilder){
+    try {
+      var usuario = usuarioService.saveUsuario(
+              usuarioDTO.username(),
+              usuarioDTO.password(),
+              usuarioDTO.confirmacaoPassword(),
+              usuarioDTO.email()
+      );
+
+      URI uri = uriComponentsBuilder.path("/usuarios/{id}")
+              .buildAndExpand(usuario.getId())
+              .toUri();
+      return ResponseEntity.status(HttpStatus.CREATED).location(uri).body(usuarioDTO);
+    }catch (IllegalArgumentException e){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }catch (EntityNotFoundException | DataIntegrityViolationException e){
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+    }catch (Exception e){
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
 
   @GetMapping("/verificar-conta")

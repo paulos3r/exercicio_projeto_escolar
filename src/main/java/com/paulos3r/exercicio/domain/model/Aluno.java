@@ -41,7 +41,7 @@ public class Aluno {
   }
 
   /**
-   * Construtor principal - usado pela Factory para criar um Aluno em um estado valido
+   * Construtor principal - usado pela Factory para criar um Aluno em estado valido
    * @param pessoa O novo status.
    * @param alunoEspecial O novo status.
    * @param status O novo status.

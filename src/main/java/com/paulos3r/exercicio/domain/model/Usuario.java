@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.domain.model;
 
-import com.paulos3r.exercicio.infrastructure.dto.UsuarioDTO;
 import com.paulos3r.exercicio.infra.RegraDeNegocioException;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -68,12 +67,12 @@ public class Usuario implements UserDetails{
       throw new IllegalArgumentException("Criação de usuário falhou, favor informar o email");
     }
 
-    if (password == null ||
-            password.trim().isEmpty() ||
-            confirmacaoPassword == null ||
-            confirmacaoPassword.trim().isEmpty()
-    ){
+    if (password.isBlank()){
       throw new IllegalArgumentException("A senha não pode ser nulo ou em branco");
+    }
+
+    if (confirmacaoPassword.trim().isEmpty()){
+      throw new IllegalArgumentException("A confirmação da senha não pode ser nulo ou em branco");
     }
 
     this.username = username;
@@ -82,17 +81,22 @@ public class Usuario implements UserDetails{
   }
 
   /**
-   *
-   * @param usuarioDTO
-   * @param senhaCriptografada
+   * Construtor principal - usado pela Factory para criar um usuário em estado valido
+   * @param username
+   * @param email
+   * @param password
    * @param perfil
    */
-  public Usuario(UsuarioDTO usuarioDTO, String senhaCriptografada, Perfil perfil){
-    this.setUsername(usuarioDTO.username());
-    this.setPassword(senhaCriptografada);
-    this.setEmail(usuarioDTO.email());
-    this.setVerificado(false);
-    this.setToken(UUID.randomUUID().toString());
+  public Usuario( String username,
+                  String password,
+                  String email,
+                  Perfil perfil){
+
+    this.username = username;
+    this.password =  password;
+    this.email = email;
+    this.verificado = false;
+    this.token = UUID.randomUUID().toString();
     this.expiracaoToken=LocalDateTime.now().plusMinutes(30);
     this.roles.add(perfil);
   }
@@ -106,9 +110,9 @@ public class Usuario implements UserDetails{
     if(expiracaoToken.isBefore(LocalDateTime.now()))
       throw new RegraDeNegocioException("Link de verificação expirou!");
 
-    this.setVerificado(true);
-    this.setToken(null);
-    this.setExpiracaoToken(null);
+    this.verificado =true;
+    this.token=null;
+    this.expiracaoToken= null;
   }
 
   public void adicionarPerfil(Perfil perfil) {
@@ -123,17 +127,9 @@ public class Usuario implements UserDetails{
     return id;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   @Override
   public String getUsername() {
     return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
   }
 
   @Override
@@ -141,48 +137,24 @@ public class Usuario implements UserDetails{
     return password;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
   public String getEmail() {
     return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
   }
 
   public List<Perfil> getRoles() {
     return roles;
   }
 
-  public void setRoles(List<Perfil> roles) {
-    this.roles = roles;
-  }
-
   public Boolean getVerificado() {
     return verificado;
-  }
-
-  public void setVerificado(Boolean verificado) {
-    this.verificado = verificado;
   }
 
   public String getToken() {
     return token;
   }
 
-  public void setToken(String token) {
-    this.token = token;
-  }
-
   public LocalDateTime getExpiracaoToken() {
     return expiracaoToken;
-  }
-
-  public void setExpiracaoToken(LocalDateTime expiracaoToken) {
-    this.expiracaoToken = expiracaoToken;
   }
 
   @Override

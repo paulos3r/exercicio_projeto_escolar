@@ -1,5 +1,6 @@
 package com.paulos3r.exercicio.domain.service;
 
+import com.paulos3r.exercicio.domain.model.gateways.UsuarioFactory;
 import com.paulos3r.exercicio.infrastructure.dto.PerfilDTO;
 import com.paulos3r.exercicio.infrastructure.dto.UsuarioDTO;
 import com.paulos3r.exercicio.infra.RegraDeNegocioException;
@@ -29,21 +30,26 @@ public class UsuarioService implements UserDetailsService {
 
   private final PerfilRepository perfilRepository;
 
-  public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService, PerfilRepository perfilRepository) {
+  private final UsuarioFactory usuarioFactory;
+
+  public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService, PerfilRepository perfilRepository, UsuarioFactory usuarioFactory) {
     this.usuarioRepository = usuarioRepository;
     this.passwordEncoder = passwordEncoder;
     this.emailService = emailService;
     this.perfilRepository = perfilRepository;
+    this.usuarioFactory = usuarioFactory;
   }
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return usuarioRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("o usuario não foi encontrado"));
+    return usuarioRepository.findByUsernameIgnoreCase(username)
+            .orElseThrow(() -> new UsernameNotFoundException("O usuário não foi encontrado"));
   }
 
   public Usuario findUsuarioById(Long id) {
 
-    return this.usuarioRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Usuario não encontrado com o Id: " +id));
+    return this.usuarioRepository.findById(id)
+            .orElseThrow(()-> new IllegalArgumentException("Usuário não encontrado com o Id: " +id));
   }
 
   public List<Usuario> findAllUsuario() {
@@ -51,20 +57,20 @@ public class UsuarioService implements UserDetailsService {
   }
 
   @Transactional
-  public Usuario saveUsuario(UsuarioDTO usuarioDTO) {
-
-    var senhaCriptografada = passwordEncoder.encode(usuarioDTO.password());
+  public Usuario saveUsuario( String username, String password, String confirmacaoPassword, String email ) {
+    if (!password.equals(confirmacaoPassword)) {
+      throw new RegraDeNegocioException("Senha não bate com a confirmação de senha!");
+    }
+    var senhaCriptografada = passwordEncoder.encode(password);
 
     var perfil = perfilRepository.findByNome(PerfilNome.ESTUDANTE);
-    var usuario = new Usuario(usuarioDTO, senhaCriptografada, perfil);
 
-    Optional<Usuario> verificarExistenciaUsuario = usuarioRepository.findByEmailIgnoreCaseAndVerificadoTrue(usuarioDTO.email());
+    Usuario usuario = usuarioFactory.createUsuario(username,senhaCriptografada,email,perfil);
+
+    Optional<Usuario> verificarExistenciaUsuario = usuarioRepository.findByEmailIgnoreCaseAndVerificadoTrue(email);
 
     if (verificarExistenciaUsuario.isPresent())
-      throw new RegraDeNegocioException("Já existe uma conta cadastrada com esse email ou nome de usuario");
-
-    if (!usuarioDTO.password().equals(usuarioDTO.confirmacaoPassword()))
-      throw new RegraDeNegocioException("Senha não bate com a confirmação de senha!");
+      throw new RegraDeNegocioException("Já existe uma conta cadastrada com esse email ou nome de usuário");
 
     emailService.enviarEmailVerificacao(usuario);
     return usuarioRepository.save(usuario);
