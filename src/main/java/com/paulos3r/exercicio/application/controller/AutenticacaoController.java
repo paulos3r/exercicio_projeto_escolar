@@ -1,11 +1,13 @@
 package com.paulos3r.exercicio.application.controller;
 
 import com.paulos3r.exercicio.domain.model.Usuario;
+import com.paulos3r.exercicio.domain.service.TokenBlacklistService;
 import com.paulos3r.exercicio.domain.service.TokenService;
 import com.paulos3r.exercicio.infrastructure.dto.AutenticacaoDTO;
 import com.paulos3r.exercicio.infrastructure.dto.TokenDTO;
 import com.paulos3r.exercicio.infrastructure.dto.TokenRefreshDTO;
 import com.paulos3r.exercicio.infrastructure.repository.UsuarioRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +28,13 @@ public class AutenticacaoController {
 
   private final UsuarioRepository usuarioRepository;
 
-  public AutenticacaoController(AuthenticationManager authenticationManager, TokenService tokenService, UsuarioRepository usuarioRepository) {
+  private final TokenBlacklistService tokenBlacklistService;
+
+  public AutenticacaoController(AuthenticationManager authenticationManager, TokenService tokenService, UsuarioRepository usuarioRepository, TokenBlacklistService tokenBlacklistService) {
     this.authenticationManager = authenticationManager;
     this.tokenService = tokenService;
     this.usuarioRepository = usuarioRepository;
+      this.tokenBlacklistService = tokenBlacklistService;
   }
 
   @PostMapping("/login")
@@ -70,6 +75,26 @@ public class AutenticacaoController {
       String refreshToken = tokenService.RefreshToken( usuario );
 
       return ResponseEntity.ok(new TokenDTO( tokenAcesso, refreshToken ) );
+    }catch (Exception e){
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+  @PostMapping("/logout")
+  public ResponseEntity<Object> logout(HttpServletRequest request){
+    try {
+      String authHeader = request.getHeader("Authorization");
+
+      if (authHeader==null || authHeader.startsWith("Bearer ")){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token Invalido ou ausente");
+      }
+
+      String token = authHeader.substring(7);
+
+      tokenBlacklistService.blacklistToken(token);
+
+      return ResponseEntity.status(HttpStatus.OK).body("Logout realizado com sucesso.");
     }catch (Exception e){
       System.out.println(e.getMessage());
       e.printStackTrace();
