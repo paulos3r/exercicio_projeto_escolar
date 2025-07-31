@@ -86,7 +86,7 @@ public class AutenticacaoController {
     try {
       String authHeader = request.getHeader("Authorization");
 
-      if (authHeader==null || authHeader.startsWith("Bearer ")){
+      if (authHeader==null || !authHeader.startsWith("Bearer ")){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token Invalido ou ausente");
       }
 
