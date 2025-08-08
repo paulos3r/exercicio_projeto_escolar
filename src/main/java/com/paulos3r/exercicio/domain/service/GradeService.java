@@ -46,7 +46,8 @@ public class GradeService {
   public Grade saveGrade( Long turmaId, Long ministrateId ){
 
     Turma turma = this.turmaService.findTurmaById(turmaId);
-    Ministrante ministrante = ministranteService.findMinistranteById(ministrateId);
+    Ministrante ministrante = ministranteService.findMinistranteById(ministrateId)
+            .orElseThrow(()->new EntityNotFoundException("Ministrante não existe!"));
 
     Grade grade = gradeFactory.createGrade(turma,ministrante);
 
@@ -57,7 +58,8 @@ public class GradeService {
   public Grade updateGrade(Long gradeId, Long turmaId, Long ministranteId ) {
 
     Turma turma = turmaService.findTurmaById(turmaId);
-    Ministrante ministrante = ministranteService.findMinistranteById(ministranteId);
+    Ministrante ministrante = ministranteService.findMinistranteById(ministranteId)
+            .orElseThrow(()->new EntityNotFoundException("Turma não existe!"));
 
     Grade grade = this.repository.findById(gradeId)
             .orElseThrow(()-> new EntityNotFoundException("Grade não encontrada pelo ID: " + gradeId));

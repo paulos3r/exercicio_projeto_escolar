@@ -7,6 +7,7 @@ import java.time.LocalDate;
  * @param pessoa_id
  * @param data_contratacao
  */
-public record DocenteDTO(Long pessoa_id,
+public record DocenteDTO(Long id,
+                         Long pessoa_id,
                          LocalDate data_contratacao) {
 }

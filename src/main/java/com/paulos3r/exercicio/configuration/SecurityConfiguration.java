@@ -45,7 +45,6 @@ public class SecurityConfiguration {
                       req.requestMatchers(HttpMethod.GET, "/alunos").hasRole("DOCENTE");
                       req.requestMatchers(HttpMethod.POST, "/alunos").hasRole("MODERADOR");
                       req.requestMatchers(HttpMethod.DELETE, "/alunos").hasRole("MODERADOR");
-                      // Atribuir mais de um responsavel
                       req.requestMatchers(HttpMethod.PATCH, "/grade").hasAnyRole("DOCENTE", "MODERADOR");
                       req.anyRequest().authenticated();
                     }

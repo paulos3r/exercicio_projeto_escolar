@@ -38,6 +38,7 @@ public class DocenteController {
       Docente docente = this.docenteService.findDocenteById(id);
       return ResponseEntity.status(HttpStatus.OK).body(
               new DocenteDTO(
+                      docente.getId(),
                       docente.getPessoa_id().getId(),
                       docente.getData_contratacao()
               )

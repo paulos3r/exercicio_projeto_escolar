@@ -1,6 +1,5 @@
 package com.paulos3r.exercicio.domain.model;
 
-import com.paulos3r.exercicio.infrastructure.dto.MinistranteDTO;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -29,33 +28,29 @@ public class Ministrante {
     this.docente_id = docente_id;
     this.disciplina_id = disciplina_id;
   }
+
   public Ministrante(Docente docente_id, Disciplina disciplina_id) {
     this.docente_id = docente_id;
     this.disciplina_id = disciplina_id;
+  }
+
+  public void atualizarDocente(Docente docente){
+    this.docente_id = docente;
+  }
+  public void atualizarDisciplina(Disciplina disciplina){
+    this.disciplina_id=disciplina;
   }
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   public Docente getDocente_id() {
     return docente_id;
   }
 
-  public void setDocente_id(Docente docente_id) {
-    this.docente_id = docente_id;
-  }
-
   public Disciplina getDisciplina_id() {
     return disciplina_id;
-  }
-
-  public void setDisciplina_id(Disciplina disciplina_id) {
-    this.disciplina_id = disciplina_id;
   }
 
   @Override
